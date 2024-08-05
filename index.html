@@ -43,8 +43,9 @@
         }
 
         a:hover {
-            color: red;
-            background-color: transparent;
+            border: 5px solid tomato;
+            color: rgba(25, 25, 29, 1);
+            background-color: tomato;
             text-decoration: underline;
         }
 
@@ -52,6 +53,20 @@
             color: yellow;
             background-color: transparent;
             text-decoration: underline;
+        }
+
+        a:link, a:visited {
+            border: 5px solid tomato;
+            color: rgba(25, 25, 29, 1);
+            background-color: tomato;
+            padding: 15px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        a:hover, a:active {
+            background-color: red;
         }
 
     </style>
@@ -98,11 +113,11 @@
 
     <img src="/IMGs/images1.jpg" /> <br />
 
-    <button>
+    
         <a href='https://en.wikipedia.org/wiki/Programmer'>
             More info
         </a>
-    </button>
+    
 
 </body>
 </html>
