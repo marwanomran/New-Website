@@ -14,13 +14,18 @@
                 
         }
 
-        p, olm li, h1, h2, h3, h4, h5, h1, 6 {
+        p, ol li, h1, h2, h3, h4, h5, h1, 6 {
             color: rgba(211, 211, 220, 1);
             text-align: center;
             list-style-position: inside;
         }
 
-        button, a:link {
+        ol {
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+            button, a:link {
             border: 5px solid rgba(58, 58, 58, 0.8);
             color: rgba(25, 25, 29, 1);
             background-color: rgba(211, 211, 220, 1);
@@ -68,10 +73,13 @@
 </head>
 <body style="background-color: rgba(25, 25, 29, 1); ">
 
-    .center {
-    text-align: center;
+    ol.center-list{
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
     list-style-position: inside;
     }
+
 
     <h1>The beginning of the new Journey</h1>
     <br />
@@ -79,7 +87,7 @@
     <p> Hello, check out my new blank wesbite page</p>
 
     <h3>List of planned languages to learn</h3>
-    <ol class="center">
+    <ol class="ol.center-list" >
         <li text-align: center;>
             HTML
         </li>
