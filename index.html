@@ -46,34 +46,81 @@
                 text-align: center
             }
 
-        
+        a:link {
+            color: darkblue;
+            background-color: transparent;
+            text-decoration: none;
+            text-align: center
+        }
+
+        a:visited {
+            color: darkviolet;
+            background-color: transparent;
+            text-decoration: none;
+            text-align: center
+        }
+
+        a:hover {
+            border: 5px solid rgba(58, 58, 58, 0.8);
+            color: rgba(25, 25, 29, 1);
+            background-color: tomato;
+            text-decoration: underline;
+            text-align: center
+        }
+
+        a:active {
+            color: yellow;
+            background-color: transparent;
+            text-decoration: underline;
+            text-align: center
+        }
+
+        a:link, a:visited {
+            border: 5px solid rgba(58, 58, 58, 0.8);
+            color: rgba(25, 25, 29, 1);
+            background-color: rgba(58, 58, 58, 0.8);
+            padding: 15px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block
+        }
+
+        a:hover, a:active {
+            background-color: red;
+            text-align: center
+        }
 
     </style>
 </head>
 <body style="background-color: rgba(25, 25, 29, 1); ">
 
+    .center {
+    text-align: center;
+    list-style-position: inside;
+    }
+
     <h1>The beginning of the new Journey</h1>
     <br />
-    <a  text-align: center;  href="https://imgbb.com/"><img src="https://i.ibb.co/JnV5pHj/good-morning-lettering-design-23-2150174293.jpg" alt="good-morning-lettering-design-23-2150174293" border="0"></a> <br />
+    <a text-align: center; href="https://imgbb.com/"><img src="https://i.ibb.co/JnV5pHj/good-morning-lettering-design-23-2150174293.jpg" alt="good-morning-lettering-design-23-2150174293" border="0"></a> <br />
     <p> Hello, check out my new blank wesbite page</p>
 
     <h3>List of planned languages to learn</h3>
-    <ol text-align: center;>
-        <li  text-align: center;>
+    <ol class="center">
+        <li text-align: center;>
             HTML
         </li>
-        <li  text-align: center;>
+        <li text-align: center;>
             CVV
         </li>
-        <li  text-align: center;>
+        <li text-align: center;>
 
             Javascript
         </li>
-        <li  text-align: center;>
+        <li text-align: center;>
 
             React.JS
         </li>
-        <li  text-align: center;>
+        <li text-align: center;>
 
             SQL
         </li>
@@ -92,11 +139,11 @@
 
     <img text-align: center; src="/IMGs/images1.jpg" /> <br />
 
-    
-        <a  text-align: center; href='https://en.wikipedia.org/wiki/Programmer'>
-            More info
-        </a>
-    
+
+    <a text-align: center; href='https://en.wikipedia.org/wiki/Programmer'>
+        More info
+    </a>
+
 
 </body>
 </html>
