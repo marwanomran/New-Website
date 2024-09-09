@@ -5,13 +5,15 @@ body {
 }
 
 .chat-container {
-    max-width: 400px;
+    max-width: 800px; /* increased width */
     margin: 40px auto;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 600px; /* added height */
+    overflow-y: auto; /* added overflow-y */
 }
 
 .chat-header {
@@ -40,11 +42,16 @@ body {
 
 .chat-messages {
     padding: 20px;
+    height: calc(100% - 120px); /* added height */
+    overflow-y: auto; /* added overflow-y */
 }
 
 .chat-input {
     padding: 20px;
     border-top: 1px solid #ddd;
+    position: absolute; /* added position */
+    bottom: 0; /* added bottom */
+    width: 100%; /* added width */
 }
 
 #message-input {
