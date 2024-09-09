@@ -5,7 +5,7 @@ body {
 }
 
 .chat-container {
-    max-width: 800px; /* increased width */
+    max-width: 400px; /* increased width */
     margin: 40px auto;
     padding: 20px;
     background-color: #fff;
@@ -55,7 +55,7 @@ body {
 }
 
 #message-input {
-    width: 30%;
+    width: 25%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
