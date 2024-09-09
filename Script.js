@@ -1,25 +1,39 @@
-// script.js
-const chatContainer = document.querySelector('.chat-container');
-const darkModeToggle = document.querySelector('#dark-mode-toggle');
-const messageInput = document.querySelector('#message-input');
-const sendButton = document.querySelector('#send-button');
-const chatMessages = document.querySelector('.chat-messages');
+// Define a dictionary of responses
+const responses = {
+    'hello': 'Hi! How can I help you?',
+    'how are you': 'I\'m good, thanks! How about you?',
+    'what is your name': 'My name is ChatBot.'
+};
 
-let darkMode = false;
+// Define a function to toggle dark mode
+function toggleDarkMode() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+}
 
-darkModeToggle.addEventListener('click', () => {
-    darkMode = !darkMode;
-    chatContainer.classList.toggle('dark-mode');
-});
+// Define a function to enlarge the window
+function enlargeWindow() {
+    const window = document.getElementById('window');
+    window.classList.toggle('enlarged');
+}
 
-sendButton.addEventListener('click', () => {
-    const message = messageInput.value.trim();
-    if (message) {
-        const messageElement = document.createElement('div');
-        messageElement.textContent = message;
-        chatMessages.appendChild(messageElement);
-        messageInput.value = '';
+// Define a function to respond to user input
+function respond(userInput) {
+    // Check if the user input matches a response
+    for (const token in responses) {
+        if (userInput.includes(token)) {
+            return responses[token];
+        }
     }
-});
 
-// GPT integration will go here
+    // If no match is found, return a default response
+    return 'Sorry, I didn\'t understand that.';
+}
+
+// Test the respond function
+const userInput = 'hello';
+console.log(respond(userInput));  // Output: Hi! How can I help you?
+
+// Add event listeners to the toggle dark mode and enlarge window buttons
+document.getElementById('toggle-dark-mode').addEventListener('click', toggleDarkMode);
+document.getElementById('enlarge-window').addEventListener('click', enlargeWindow);
