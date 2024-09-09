@@ -1,7 +1,8 @@
-// Get the input field, send button, and chat window elements
+// Get the input field, send button, chat window, and toggle button elements
 const inputField = document.getElementById('input-field');
 const sendBtn = document.getElementById('send-btn');
 const chatWindow = document.getElementById('chat-window');
+const toggleBtn = document.getElementById('toggle-btn');
 
 // Add event listener to the send button
 sendBtn.addEventListener('click', () => {
@@ -29,3 +30,10 @@ sendBtn.addEventListener('click', () => {
 function getAIResponse(userInput) {
     // This is a placeholder function. You would need to implement the actual AI logic here.
     return 'This is a sample response from the AI.';
+}
+
+// Add event listener to the toggle button
+toggleBtn.addEventListener('click', () => {
+    // Toggle the dark-mode class on the body element
+    document.body.classList.toggle('dark-mode');
+});
