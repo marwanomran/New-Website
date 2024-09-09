@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat GPT</title>
+    <title>Blackbox AI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header class="chat-header">
+        <h1>Blackbox AI</h1>
+    </header>
     <div class="chat-container">
-        <div class="chat-header">
-            <h1>Chat GPT</h1>
-        </div>
-        <div class="chat-window" id="chat-window">
-            <!-- Conversation will be displayed here -->
-        </div>
+        <div class="chat-window" id="chat-window"></div>
         <div class="input-container">
             <input type="text" id="input-field" placeholder="Type a message...">
             <button id="send-btn">Send</button>
+            <button id="toggle-btn">Toggle Dark Mode</button>
         </div>
     </div>
-    <button class="toggle-btn" id="toggle-btn">Toggle Dark Mode</button>
 
     <script src="script.js"></script>
 </body>

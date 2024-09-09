@@ -1,124 +1,83 @@
-﻿body {
+﻿:root {
+    --primary-color: #333;
+    --secondary-color: #666;
+    --background-color: #f0f0f0;
+    --dark-background-color: #333;
+    --text-color: #333;
+    --dark-text-color: #fff;
+}
+
+body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
     transition: background-color 0.3s ease;
+    color: var(--text-color);
 }
 
 .dark-mode {
-    background-color: #333;
-}
-
-.chat-container {
-    width: 500px;
-    margin: 40px auto;
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dark-mode .chat-container {
-    background-color: #444;
-    border-color: #555;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: var(--dark-background-color);
+    color: var(--dark-text-color);
 }
 
 .chat-header {
-    background-color: #333;
+    background-color: var(--primary-color);
     color: #fff;
-    padding: 10px;
+    padding: 1em;
     text-align: center;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.dark-mode .chat-header {
-    background-color: #555;
-    color: #fff;
-    border-color: #666;
+.chat-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .chat-window {
     padding: 20px;
-    height: 400px;
     overflow-y: auto;
-    transition: background-color 0.3s ease;
-}
-
-.dark-mode .chat-window {
-    background-color: #444;
+    max-height: 500px;
 }
 
 .input-container {
-    padding: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
     border-top: 1px solid #ddd;
-    transition: border-color 0.3s ease;
-}
-
-.dark-mode .input-container {
-    border-color: #fff;
-    color: #fff;
 }
 
 #input-field {
     width: 80%;
-    height: 30px;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-.dark-mode #input-field {
-    border-color: #666;
-    background-color: #555;
-    color: #fff;
 }
 
 #send-btn {
-    width: 20%;
-    height: 30px;
-    background-color: #333;
+    background-color: var(--primary-color);
     color: #fff;
+    padding: 10px 20px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.dark-mode #send-btn {
-    background-color: #555;
-}
+    #send-btn:hover {
+        background-color: var(--secondary-color);
+    }
 
-#send-btn:hover {
-    background-color: #444;
-}
-
-.dark-mode #send-btn:hover {
-    background-color: #666;
-}
-
-.toggle-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #333;
+#toggle-btn {
+    background-color: var(--primary-color);
     color: #fff;
+    padding: 10px 20px;
     border: none;
-    padding: 10px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-left: 10px;
 }
 
-.dark-mode .toggle-btn {
-    background-color: #555;
-}
-
-.toggle-btn:hover {
-    background-color: #444;
-}
-
-.dark-mode .toggle-btn:hover {
-    background-color: #666;
-}
+    #toggle-btn:hover {
+        background-color: var(--secondary-color);
+    }
