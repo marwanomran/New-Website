@@ -3,117 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with LLM</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
-
-        .chat-container {
-            width: 350px;
-            margin: 20px auto;
-            border: 1px solid #4a4a4a;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .chat-header {
-            background-color: #252525;
-            padding: 10px;
-            font-size: 18px;
-        }
-
-        .chat-box {
-            height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: #1e1e1e;
-            border-bottom: 1px solid #4a4a4a;
-        }
-
-        .chat-input {
-            display: flex;
-            padding: 10px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 4px;
-        }
-
-        button {
-            margin-left: 10px;
-            padding: 8px 15px;
-            background-color: #6a6a6a;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
+    <title>Chat GPT</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-header">Chat with LLM</div>
-        <div class="chat-box" id="chatBox">
-            <!-- Chat history will be displayed here -->
+        <div class="chat-header">
+            <h1>Chat GPT</h1>
         </div>
-        <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Type a message...">
-            <button onclick="sendMessage()">Send</button>
+        <div class="chat-window" id="chat-window">
+            <!-- Conversation will be displayed here -->
+        </div>
+        <div class="input-container">
+            <input type="text" id="input-field" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
         </div>
     </div>
+    <button class="toggle-btn" id="toggle-btn">Toggle Dark Mode</button>
 
-    <script>
-        function sendMessage() {
-            var userText = document.getElementById("userInput").value;
-            if (userText.trim() === "") return;
-
-            // Display user's message in the chat box
-            displayMessage(userText, "user");
-
-            // Clear input field
-            document.getElementById("userInput").value = "";
-
-            // Send userText to backend and get response
-            fetch('http://your-llm-api-endpoint', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ text: userText })
-            }).then(response => response.json())
-              .then(data => {
-                  // Display LLM's response in the chat box
-                  displayMessage(data.response, "llm");
-              });
-        }
-
-        function displayMessage(message, sender) {
-            var chatBox = document.getElementById("chatBox");
-            var msgElement = document.createElement("div");
-            msgElement.textContent = message;
-            if (sender === "user") {
-                msgElement.style.textAlign = "right";
-                msgElement.style.color = "#00ff00"; // User messages in green for contrast
-            } else {
-                msgElement.style.textAlign = "left";
-                msgElement.style.color = "#ffffff"; // LLM responses in white
-            }
-            chatBox.appendChild(msgElement);
-            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom of the chat box
-
-            
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

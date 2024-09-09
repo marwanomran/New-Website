@@ -1,0 +1,123 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode {
+    background-color: #333;
+}
+
+.chat-container {
+    width: 500px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode .chat-container {
+    background-color: #444;
+    border-color: #555;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.chat-header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.dark-mode .chat-header {
+    background-color: #555;
+    color: #fff;
+    border-color: #666;
+}
+
+.chat-window {
+    padding: 20px;
+    height: 400px;
+    overflow-y: auto;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode .chat-window {
+    background-color: #444;
+}
+
+.input-container {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    transition: border-color 0.3s ease;
+}
+
+.dark-mode .input-container {
+    border-color: #555;
+}
+
+#input-field {
+    width: 80%;
+    height: 30px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.dark-mode #input-field {
+    border-color: #666;
+    background-color: #555;
+    color: #fff;
+}
+
+#send-btn {
+    width: 20%;
+    height: 30px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode #send-btn {
+    background-color: #555;
+}
+
+#send-btn:hover {
+    background-color: #444;
+}
+
+.dark-mode #send-btn:hover {
+    background-color: #666;
+}
+
+.toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode .toggle-btn {
+    background-color: #555;
+}
+
+.toggle-btn:hover {
+    background-color: #444;
+}
+
+.dark-mode .toggle-btn:hover {
+    background-color: #666;
+}
