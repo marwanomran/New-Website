@@ -48,7 +48,7 @@
 }
 
 .dark-mode .chat-window {
-    background-color: #444;
+    background-color: #fff;
 }
 
 .input-container {
@@ -58,7 +58,8 @@
 }
 
 .dark-mode .input-container {
-    border-color: #555;
+    border-color: #fff;
+    color: #fff;
 }
 
 #input-field {
