@@ -1,31 +1,25 @@
-// Get the input field, send button, and chat window elements
-const inputField = document.getElementById('input-field');
-const sendBtn = document.getElementById('send-btn');
-const chatWindow = document.getElementById('chat-window');
+// script.js
+const chatContainer = document.querySelector('.chat-container');
+const darkModeToggle = document.querySelector('#dark-mode-toggle');
+const messageInput = document.querySelector('#message-input');
+const sendButton = document.querySelector('#send-button');
+const chatMessages = document.querySelector('.chat-messages');
 
-// Add event listener to the send button
-sendBtn.addEventListener('click', () => {
-    // Get the user's input
-    const userInput = inputField.value.trim();
+let darkMode = false;
 
-    // Check if the input is not empty
-    if (userInput !== '') {
-        // Create a new paragraph element to display the user's message
-        const userMessage = document.createElement('p');
-        userMessage.textContent = `You: ${userInput}`;
-        chatWindow.appendChild(userMessage);
+darkModeToggle.addEventListener('click', () => {
+    darkMode = !darkMode;
+    chatContainer.classList.toggle('dark-mode');
+});
 
-        // Create a new paragraph element to display the AI's response
-        const aiResponse = document.createElement('p');
-        aiResponse.textContent = `AI: ${getAIResponse(userInput)}`;
-        chatWindow.appendChild(aiResponse);
-
-        // Clear the input field
-        inputField.value = '';
+sendButton.addEventListener('click', () => {
+    const message = messageInput.value.trim();
+    if (message) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        chatMessages.appendChild(messageElement);
+        messageInput.value = '';
     }
 });
 
-// Function to get the AI's response
-function getAIResponse(userInput) {
-    // This is a placeholder function. You would need to implement the actual AI logic here.
-    return 'This is a sample response from the AI.';
+// GPT integration will go here

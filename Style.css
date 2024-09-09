@@ -1,33 +1,11 @@
-﻿:root {
-    --primary-color: #333;
-    --secondary-color: #666;
-    --background-color: #f0f0f0;
-    --dark-background-color: #333;
-    --text-color: #333;
-    --dark-text-color: #fff;
-}
-
+﻿/* styles.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: var(--background-color);
-    transition: background-color 0.3s ease;
-    color: var(--text-color);
-}
-
-.dark-mode {
-    background-color: var(--dark-background-color);
-    color: var(--dark-text-color);
-}
-
-.chat-header {
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 1em;
-    text-align: center;
+    background-color: #f0f0f0;
 }
 
 .chat-container {
-    max-width: 800px;
+    max-width: 400px;
     margin: 40px auto;
     padding: 20px;
     background-color: #fff;
@@ -36,48 +14,95 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.chat-window {
-    padding: 20px;
-    overflow-y: auto;
-    max-height: 500px;
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
-.input-container {
+    .chat-header h2 {
+        margin: 0;
+    }
+
+#dark-mode-toggle {
+    background-color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    #dark-mode-toggle:hover {
+        background-color: #f0f0f0;
+    }
+
+.chat-messages {
     padding: 20px;
-    background-color: #f9f9f9;
+}
+
+.chat-input {
+    padding: 20px;
     border-top: 1px solid #ddd;
 }
 
-#input-field {
-    width: 80%;
+#message-input {
+    width: 100%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
 }
 
-#send-btn {
-    background-color: var(--primary-color);
+#send-button {
+    background-color: #4CAF50;
     color: #fff;
     padding: 10px 20px;
+    font-size: 16px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
 }
 
-    #send-btn:hover {
-        background-color: var(--secondary-color);
+    #send-button:hover {
+        background-color: #3e8e41;
     }
 
-#toggle-btn {
-    background-color: var(--primary-color);
+/* dark mode styles */
+.dark-mode {
+    background-color: #333;
     color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
 }
 
-    #toggle-btn:hover {
-        background-color: var(--secondary-color);
+    .dark-mode .chat-container {
+        background-color: #444;
+        border: 1px solid #555;
+    }
+
+    .dark-mode .chat-header {
+        border-bottom: 1px solid #555;
+    }
+
+    .dark-mode #dark-mode-toggle {
+        background-color: #444;
+    }
+
+        .dark-mode #dark-mode-toggle:hover {
+            background-color: #333;
+        }
+
+    .dark-mode .chat-messages {
+        color: #fff;
+    }
+
+    .dark-mode .chat-input {
+        border-top: 1px solid #555;
+    }
+
+    .dark-mode #message-input {
+        border: 1px solid #555;
+    }
+
+    .dark-mode #send-button {
+        background-color: #4CAF50;
+        color: #fff;
     }
