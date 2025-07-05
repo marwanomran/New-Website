@@ -75,6 +75,9 @@ document.getElementById('submitButton').addEventListener('click', async function
         errorBubble.className = 'bubble aiBubble';
         errorBubble.textContent = `An error occurred: ${error.message}`;
         chatBox.appendChild(errorBubble);
+        const text = await response.text();
+        console.log('Raw Ollama response:', text); // <-- Add this line
+
     } finally {
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
