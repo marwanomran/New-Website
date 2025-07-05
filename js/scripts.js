@@ -9,7 +9,7 @@ document.getElementById('submitButton').addEventListener('click', function () {
     document.getElementById('chatBox').appendChild(userBubble);
 
     // Send request to AI service
-    fetch(`http://3dsoftwareemergence.zapto.org:11434/query`, {
+    fetch(`https://3dsoftwareemergence.zapto.org:11434/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query })
