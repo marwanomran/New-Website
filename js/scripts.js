@@ -1,3 +1,11 @@
+// Utility function to create a chat bubble
+function createBubble(content, className) {
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${className}`;
+    bubble.textContent = content;
+    return bubble;
+}
+
 // Fetch and populate models dropdown on page load
 document.addEventListener('DOMContentLoaded', async function () {
     const modelSelect = document.getElementById('modelSelect');
@@ -5,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         const response = await fetch('http://3dsoftwareemergence.zapto.org:11434/api/tags');
         if (!response.ok) throw new Error('Failed to fetch models');
         const data = await response.json();
-        // Ollama returns { "models": [ { "name": "llama2", ... }, ... ] }
         modelSelect.innerHTML = '';
         data.models.forEach(model => {
             const option = document.createElement('option');
@@ -25,22 +32,25 @@ document.getElementById('submitButton').addEventListener('click', async function
     const submitButton = document.getElementById('submitButton');
     const modelSelect = document.getElementById('modelSelect');
     const query = userInput.value.trim();
+
     if (!query) return;
 
     // Append user message bubble
-    const userBubble = document.createElement('div');
-    userBubble.className = 'bubble userBubble';
-    userBubble.textContent = query;
-    chatBox.appendChild(userBubble);
-
-    // Scroll to bottom
+    chatBox.appendChild(createBubble(query, 'userBubble'));
     chatBox.scrollTop = chatBox.scrollHeight;
 
     // Disable button to prevent duplicate submissions
     submitButton.disabled = true;
 
     const apiEndpoint = `http://3dsoftwareemergence.zapto.org:11434/api/generate`;
-    const modelName = modelSelect.value; // Get selected model name
+    const modelName = modelSelect.value;
+
+    if (!modelName) {
+        chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
+        submitButton.disabled = false;
+        return;
+    }
+
     const requestData = {
         model: modelName,
         prompt: query
@@ -57,39 +67,30 @@ document.getElementById('submitButton').addEventListener('click', async function
             throw new Error(`Server error: ${response.status}`);
         }
 
-        // Read and log the response as text (NDJSON)
         const text = await response.text();
         console.log('Raw Ollama response:', text);
 
-        // Split by newlines and filter out empty lines
         const lines = text.split('\n').filter(line => line.trim() !== '');
         let last = null;
+
         for (const line of lines) {
             try {
                 const obj = JSON.parse(line);
                 last = obj;
             } catch (e) {
-                // Ignore non-JSON lines
+                console.warn('Invalid JSON line:', line);
             }
         }
 
-        // Try to extract the response text
         const aiText = last && (last.response || last.message || last.content)
             ? (last.response || last.message || last.content)
             : "No response from AI.";
-        const aiBubble = document.createElement('div');
-        aiBubble.className = 'bubble aiBubble';
-        aiBubble.textContent = aiText;
-        chatBox.appendChild(aiBubble);
+        chatBox.appendChild(createBubble(aiText, 'aiBubble'));
     } catch (error) {
         console.error('Error:', error);
-        const errorBubble = document.createElement('div');
-        errorBubble.className = 'bubble aiBubble';
-        errorBubble.textContent = `An error occurred: ${error.message}`;
-        chatBox.appendChild(errorBubble);
+        chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
     } finally {
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
-
 });
