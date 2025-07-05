@@ -71,20 +71,20 @@ document.getElementById('submitButton').addEventListener('click', async function
         console.log('Raw Ollama response:', text);
 
         const lines = text.split('\n').filter(line => line.trim() !== '');
-        let last = null;
+        let fullResponse = '';
 
         for (const line of lines) {
             try {
                 const obj = JSON.parse(line);
-                last = obj;
+                if (obj.response) {
+                    fullResponse += obj.response; // Concatenate response text
+                }
             } catch (e) {
                 console.warn('Invalid JSON line:', line);
             }
         }
 
-        const aiText = last && (last.response || last.message || last.content)
-            ? (last.response || last.message || last.content)
-            : "No response from AI.";
+        const aiText = fullResponse.trim() || "No response from AI.";
         chatBox.appendChild(createBubble(aiText, 'aiBubble'));
     } catch (error) {
         console.error('Error:', error);
@@ -93,4 +93,5 @@ document.getElementById('submitButton').addEventListener('click', async function
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
+
 });
