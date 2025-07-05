@@ -7,7 +7,7 @@ document.getElementById('submitButton').addEventListener('click', function () {
     userBubble.className = 'bubble userBubble';
     userBubble.textContent = query;
     document.getElementById('chatBox').appendChild(userBubble);
-
+    
     // Send request to AI service
     fetch(`http://3dsoftwareemergence.zapto.org:11434/query`, {
         method: 'POST',
