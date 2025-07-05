@@ -74,18 +74,23 @@ document.getElementById('submitButton').addEventListener('click', async function
 
 
         const lines = text.split('\n').filter(line => line.trim() !== '');
+        console.log('Parsed lines:', lines);
+
         let fullResponse = '';
 
         for (const line of lines) {
             try {
                 const obj = JSON.parse(line);
-                if (obj.response) {
-                    fullResponse += obj.response; // Concatenate response text
+                console.log('Parsed object:', obj); // Log each parsed object
+                if (obj.response && obj.response.trim() !== '') {
+                    fullResponse += obj.response; // Concatenate non-empty response text
                 }
             } catch (e) {
                 console.warn('Invalid JSON line:', line);
             }
         }
+
+        console.log('Full response after concatenation:', fullResponse);
 
         const aiText = fullResponse.trim() || "No response from AI.";
         chatBox.appendChild(createBubble(aiText, 'aiBubble'));
@@ -96,5 +101,6 @@ document.getElementById('submitButton').addEventListener('click', async function
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
+
 
 });
