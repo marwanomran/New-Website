@@ -1,11 +1,38 @@
+// Utility function to create a chat bubble
+function createBubble(content, className) {
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${className}`;
+    bubble.textContent = content;
+    return bubble;
+}
+
+// Fetch and populate models dropdown on page load
+document.addEventListener('DOMContentLoaded', async function () {
+    const modelSelect = document.getElementById('modelSelect');
+    try {
+        const response = await fetch('http://3dsoftwareemergence.zapto.org:11434/api/tags');
+        if (!response.ok) throw new Error('Failed to fetch models');
+        const data = await response.json();
+        modelSelect.innerHTML = '';
+        data.models.forEach(model => {
+            const option = document.createElement('option');
+            option.value = model.name;
+            option.textContent = model.name;
+            modelSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading models:', error);
+        modelSelect.innerHTML = '<option value="">Error loading models</option>';
+    }
+});
+
 document.getElementById('submitButton').addEventListener('click', async function () {
     const userInput = document.getElementById('userInput');
     const chatBox = document.getElementById('chatBox');
     const submitButton = document.getElementById('submitButton');
     const modelSelect = document.getElementById('modelSelect');
+    const query = userInput.value.trim();
 
-    // Trim and get the query
-    let query = userInput.value.trim();
     if (!query) return;
 
     // Append user message bubble
@@ -16,7 +43,7 @@ document.getElementById('submitButton').addEventListener('click', async function
     submitButton.disabled = true;
 
     const apiEndpoint = `http://3dsoftwareemergence.zapto.org:11434/api/generate`;
-    let modelName = modelSelect.value;
+    const modelName = modelSelect.value;
 
     if (!modelName) {
         chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
@@ -30,7 +57,7 @@ document.getElementById('submitButton').addEventListener('click', async function
     };
 
     try {
-        let response = await fetch(apiEndpoint, {
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData)
@@ -42,9 +69,11 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const text = await response.text();
         console.log('Raw Ollama response:', text);
+        console.log('Parsed lines:', lines);
+        console.log('Full response:', fullResponse);
 
-        // Initialize lines before using it
-        let lines = text.split('\n').filter(line => line.trim() !== '');
+
+        const lines = text.split('\n').filter(line => line.trim() !== '');
         console.log('Parsed lines:', lines);
 
         let fullResponse = '';
@@ -65,7 +94,6 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const aiText = fullResponse.trim() || "No response from AI.";
         chatBox.appendChild(createBubble(aiText, 'aiBubble'));
-
     } catch (error) {
         console.error('Error:', error);
         chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
@@ -73,4 +101,6 @@ document.getElementById('submitButton').addEventListener('click', async function
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
+
+
 });
