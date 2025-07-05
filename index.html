@@ -1,27 +1,17 @@
-﻿<!-- index.html -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Interface</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Service Interaction</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>Chat with GPT</h2>
-            <button id="dark-mode-toggle">Toggle Dark Mode</button>
-        </div>
-        <div class="chat-messages">
-            <!-- chat messages will be displayed here -->
-        </div>
-        <div class="chat-input">
-            <input type="text" id="message-input" placeholder="Type a message...">
-            <button id="send-button">Send</button>
-        </div>
+    <div class="container">
+        <h1>Interact with Local AI Service</h1>
+        <textarea id="userInput" placeholder="Enter your query here..."></textarea>
+        <button id="submitButton">Send Query</button>
+        <pre id="responseArea"></pre>
     </div>
-
-    <script src="script.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>

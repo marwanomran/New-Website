@@ -1,25 +1,18 @@
-// script.js
-const chatContainer = document.querySelector('.chat-container');
-const darkModeToggle = document.querySelector('#dark-mode-toggle');
-const messageInput = document.querySelector('#message-input');
-const sendButton = document.querySelector('#send-button');
-const chatMessages = document.querySelector('.chat-messages');
+document.getElementById('submitButton').addEventListener('click', function () {
+    const query = document.getElementById('userInput').value;
+    if (!query) return;
 
-let darkMode = false;
-
-darkModeToggle.addEventListener('click', () => {
-    darkMode = !darkMode;
-    chatContainer.classList.toggle('dark-mode');
+    fetch(`http://3dsoftwareemergence.zapto.org:11434/query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('responseArea').textContent = data.response;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('responseArea').textContent = 'An error occurred. Please check the server logs.';
+        });
 });
-
-sendButton.addEventListener('click', () => {
-    const message = messageInput.value.trim();
-    if (message) {
-        const messageElement = document.createElement('div');
-        messageElement.textContent = message;
-        chatMessages.appendChild(messageElement);
-        messageInput.value = '';
-    }
-});
-
-// GPT integration will go here

@@ -1,115 +1,43 @@
-﻿/* styles.css */
-body {
+﻿body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
 }
 
-.chat-container {
-    max-width: 1600px; /* increased width */
-    margin: 40px auto;
+.container {
+    max-width: 600px;
+    margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    height: 600px; /* added height */
-    overflow-y: auto; /* added overflow-y */
-}
-
-.chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-    .chat-header h2 {
-        margin: 0;
-    }
-
-#dark-mode-toggle {
-    background-color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-    #dark-mode-toggle:hover {
-        background-color: #f0f0f0;
-    }
-
-.chat-messages {
-    padding: 20px;
-    height: calc(100% - 120px); /* added height */
-    overflow-y: auto; /* added overflow-y */
-}
-
-.chat-input {
-    padding: 20px;
-    border-top: 1px solid #ddd;
-    position: absolute; /* added position */
-    bottom: 0; /* added bottom */
-    width: 100%; /* added width */
-}
-
-#message-input {
-    width: 60%;
-    padding: 10px;
-    font-size: 16px;
     border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
-#send-button {
-    background-color: #4CAF50;
-    color: #fff;
-    padding: 10px 20px;
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
     font-size: 16px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
     border: none;
     cursor: pointer;
 }
 
-    #send-button:hover {
-        background-color: #3e8e41;
+    button:hover {
+        background-color: #45a049;
     }
 
-/* dark mode styles */
-.dark-mode {
-    background-color: #333;
-    color: #fff;
+#responseArea {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 100px;
 }
-
-    .dark-mode .chat-container {
-        background-color: #444;
-        border: 1px solid #555;
-    }
-
-    .dark-mode .chat-header {
-        border-bottom: 1px solid #555;
-    }
-
-    .dark-mode #dark-mode-toggle {
-        background-color: #444;
-    }
-
-        .dark-mode #dark-mode-toggle:hover {
-            background-color: #333;
-        }
-
-    .dark-mode .chat-messages {
-        color: #fff;
-    }
-
-    .dark-mode .chat-input {
-        border-top: 1px solid #555;
-    }
-
-    .dark-mode #message-input {
-        border: 1px solid #555;
-    }
-
-    .dark-mode #send-button {
-        background-color: #4CAF50;
-        color: #fff;
-    }
