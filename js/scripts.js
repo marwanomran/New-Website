@@ -31,6 +31,8 @@ document.getElementById('submitButton').addEventListener('click', async function
     const chatBox = document.getElementById('chatBox');
     const submitButton = document.getElementById('submitButton');
     const modelSelect = document.getElementById('modelSelect');
+
+    // Get the trimmed query input
     const query = userInput.value.trim();
 
     if (!query) return;
@@ -57,7 +59,7 @@ document.getElementById('submitButton').addEventListener('click', async function
     };
 
     try {
-        const response = await fetch(apiEndpoint, {
+        let response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData)
@@ -69,22 +71,13 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const text = await response.text();
         console.log('Raw Ollama response:', text);
-        console.log('Parsed lines:', lines);
-        console.log('Full response:', fullResponse);
 
-
-        // Initialize lines properly before using
-
+        // Parse the lines from the raw response
         let lines;
-
         try {
-
             lines = text.split('\n').filter(line => line.trim() !== '');
-
         } catch (e) {
-
             lines = [];
-
         }
         console.log('Parsed lines:', lines);
 
@@ -93,7 +86,6 @@ document.getElementById('submitButton').addEventListener('click', async function
         for (const line of lines) {
             try {
                 const obj = JSON.parse(line);
-                console.log('Parsed object:', obj); // Log each parsed object
                 if (obj.response && obj.response.trim() !== '') {
                     fullResponse += obj.response; // Concatenate non-empty response text
                 }
@@ -106,6 +98,7 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const aiText = fullResponse.trim() || "No response from AI.";
         chatBox.appendChild(createBubble(aiText, 'aiBubble'));
+
     } catch (error) {
         console.error('Error:', error);
         chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
@@ -113,6 +106,4 @@ document.getElementById('submitButton').addEventListener('click', async function
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
-
-
 });
