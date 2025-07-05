@@ -69,6 +69,9 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const text = await response.text();
         console.log('Raw Ollama response:', text);
+        console.log('Parsed lines:', lines);
+        console.log('Full response:', fullResponse);
+
 
         const lines = text.split('\n').filter(line => line.trim() !== '');
         let fullResponse = '';
