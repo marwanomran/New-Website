@@ -2,23 +2,20 @@
 document.addEventListener('DOMContentLoaded', async function () {
     const modelSelect = document.getElementById('modelSelect');
     try {
-        const response = await fetch('http://3dsoftwareemergence.zapto.org:8000/api/models');
+        const response = await fetch('http://3dsoftwareemergence.zapto.org:11434/api/tags');
         if (!response.ok) throw new Error('Failed to fetch models');
-        const models = await response.json();
-
-        // Populate dropdown
-        models.forEach(model => {
+        const data = await response.json();
+        // Ollama returns { "models": [ { "name": "llama2", ... }, ... ] }
+        modelSelect.innerHTML = '';
+        data.models.forEach(model => {
             const option = document.createElement('option');
-            option.value = model.key;
-            option.textContent = model.name || model.key;
+            option.value = model.name;
+            option.textContent = model.name;
             modelSelect.appendChild(option);
         });
     } catch (error) {
         console.error('Error loading models:', error);
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = 'Error loading models';
-        modelSelect.appendChild(option);
+        modelSelect.innerHTML = '<option value="">Error loading models</option>';
     }
 });
 
@@ -42,11 +39,11 @@ document.getElementById('submitButton').addEventListener('click', async function
     // Disable button to prevent duplicate submissions
     submitButton.disabled = true;
 
-    const apiEndpoint = `http://3dsoftwareemergence.zapto.org:8000/api/generate`;
-    const modelKey = modelSelect.value; // Get selected model key
+    const apiEndpoint = `http://3dsoftwareemergence.zapto.org:11434/api/generate`;
+    const modelName = modelSelect.value; // Get selected model name
     const requestData = {
-        key: modelKey,
-        query: query
+        model: modelName,
+        prompt: query
     };
 
     try {
@@ -62,8 +59,8 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const data = await response.json();
 
-        // Check for valid response
-        const aiText = data && data.response ? data.response : "No response from AI.";
+        // Ollama streams responses, but for simplicity, just show the first response
+        const aiText = data.response || "No response from AI.";
         const aiBubble = document.createElement('div');
         aiBubble.className = 'bubble aiBubble';
         aiBubble.textContent = aiText;
@@ -75,7 +72,6 @@ document.getElementById('submitButton').addEventListener('click', async function
         errorBubble.textContent = `An error occurred: ${error.message}`;
         chatBox.appendChild(errorBubble);
     } finally {
-        // Scroll to bottom and re-enable button
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
