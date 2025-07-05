@@ -57,10 +57,14 @@ document.getElementById('submitButton').addEventListener('click', async function
             throw new Error(`Server error: ${response.status}`);
         }
 
-        const data = await response.json();
+        // Read the response as text (NDJSON)
+        const text = await response.text();
+        // Split by newlines and filter out empty lines
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+        // Parse each line as JSON and get the last one (final response)
+        const last = lines.length > 0 ? JSON.parse(lines[lines.length - 1]) : null;
 
-        // Ollama streams responses, but for simplicity, just show the first response
-        const aiText = data.response || "No response from AI.";
+        const aiText = last && last.response ? last.response : "No response from AI.";
         const aiBubble = document.createElement('div');
         aiBubble.className = 'bubble aiBubble';
         aiBubble.textContent = aiText;
