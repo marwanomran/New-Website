@@ -8,11 +8,17 @@ document.getElementById('submitButton').addEventListener('click', function () {
     userBubble.textContent = query;
     document.getElementById('chatBox').appendChild(userBubble);
 
-    // Send request to AI service
-    fetch(`http://3dsoftwareemergence.zapto.org:11434/api/generate`, {
+    const apiEndpoint = `http://3dsoftwareemergence.zapto.org:11434/api/generate`;
+    const modelKey = "your_model_key";  // Replace with actual key
+    const requestData = {
+        key: modelKey,
+        query: query
+    };
+
+    fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
+        body: JSON.stringify(requestData)
     })
         .then(response => response.json())
         .then(data => {
@@ -27,10 +33,7 @@ document.getElementById('submitButton').addEventListener('click', function () {
             // Append error message bubble
             let errorBubble = document.createElement('div');
             errorBubble.className = 'bubble aiBubble';
-            errorBubble.textContent = 'An error occurred. Please check the server logs.';
+            errorBubble.textContent = `An error occurred: ${error.message}`;
             document.getElementById('chatBox').appendChild(errorBubble);
         });
-
-    // Clear input
-    document.getElementById('userInput').value = '';
 });
