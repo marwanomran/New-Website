@@ -57,7 +57,7 @@ document.getElementById('submitButton').addEventListener('click', async function
     };
 
     try {
-        let response = await fetch(apiEndpoint, {
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData)
@@ -69,13 +69,22 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const text = await response.text();
         console.log('Raw Ollama response:', text);
+        console.log('Parsed lines:', lines);
+        console.log('Full response:', fullResponse);
+
 
         // Initialize lines properly before using
+
         let lines;
+
         try {
+
             lines = text.split('\n').filter(line => line.trim() !== '');
+
         } catch (e) {
+
             lines = [];
+
         }
         console.log('Parsed lines:', lines);
 
@@ -97,7 +106,6 @@ document.getElementById('submitButton').addEventListener('click', async function
 
         const aiText = fullResponse.trim() || "No response from AI.";
         chatBox.appendChild(createBubble(aiText, 'aiBubble'));
-
     } catch (error) {
         console.error('Error:', error);
         chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
@@ -105,4 +113,6 @@ document.getElementById('submitButton').addEventListener('click', async function
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
+
+
 });
