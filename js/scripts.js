@@ -57,14 +57,26 @@ document.getElementById('submitButton').addEventListener('click', async function
             throw new Error(`Server error: ${response.status}`);
         }
 
-        // Read the response as text (NDJSON)
+        // Read and log the response as text (NDJSON)
         const text = await response.text();
+        console.log('Raw Ollama response:', text);
+
         // Split by newlines and filter out empty lines
         const lines = text.split('\n').filter(line => line.trim() !== '');
-        // Parse each line as JSON and get the last one (final response)
-        const last = lines.length > 0 ? JSON.parse(lines[lines.length - 1]) : null;
+        let last = null;
+        for (const line of lines) {
+            try {
+                const obj = JSON.parse(line);
+                last = obj;
+            } catch (e) {
+                // Ignore non-JSON lines
+            }
+        }
 
-        const aiText = last && last.response ? last.response : "No response from AI.";
+        // Try to extract the response text
+        const aiText = last && (last.response || last.message || last.content)
+            ? (last.response || last.message || last.content)
+            : "No response from AI.";
         const aiBubble = document.createElement('div');
         aiBubble.className = 'bubble aiBubble';
         aiBubble.textContent = aiText;
@@ -75,11 +87,9 @@ document.getElementById('submitButton').addEventListener('click', async function
         errorBubble.className = 'bubble aiBubble';
         errorBubble.textContent = `An error occurred: ${error.message}`;
         chatBox.appendChild(errorBubble);
-        const text = await response.text();
-        console.log('Raw Ollama response:', text); // <-- Add this line
-
     } finally {
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
+
 });
