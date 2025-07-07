@@ -97,9 +97,7 @@ document.getElementById('submitButton').addEventListener('click', async function
         console.log('Full response after concatenation:', fullResponse);
 
         const aiText = fullResponse.trim() || "No response from AI.";
-        const aiBubble = createBubble('', 'aiBubble');
-        chatBox.appendChild(aiBubble);
-        typeTextIntoBubble(aiBubble, aiText, 50); // 50ms per word, adjust as desired
+        chatBox.appendChild(createBubble(aiText, 'aiBubble'));
 
     } catch (error) {
         console.error('Error:', error);
@@ -107,18 +105,5 @@ document.getElementById('submitButton').addEventListener('click', async function
     } finally {
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
-    }
-    function typeTextIntoBubble(bubble, text, delay = 50) {
-        const words = text.split(' ');
-        let i = 0;
-        bubble.textContent = '';
-        function typeNext() {
-            if (i < words.length) {
-                bubble.textContent += (i === 0 ? '' : ' ') + words[i];
-                i++;
-                setTimeout(typeNext, delay);
-            }
-        }
-        typeNext();
     }
 });
