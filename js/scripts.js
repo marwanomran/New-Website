@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const modelSelect = document.getElementById('modelSelect');
     try {
         const response = await fetch('https://3dsoftwareemergence.dpdns.org:443/api/tags');
-        if (!response.ok) throw new Error('Failed to fetch models');
+        if (!response.ok) throw new Error('Failed to load models');
         const data = await response.json();
         modelSelect.innerHTML = '';
         data.models.forEach(model => {
