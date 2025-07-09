@@ -44,7 +44,7 @@ document.getElementById('submitButton').addEventListener('click', async function
     // Disable button to prevent duplicate submissions
     submitButton.disabled = true;
 
-    const apiEndpoint = `http://3dsoftwareemergence.zapto.org:11434/api/generate`;
+    const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
     const modelName = modelSelect.value;
 
     if (!modelName) {
