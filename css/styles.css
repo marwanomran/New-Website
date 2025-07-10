@@ -538,6 +538,7 @@ button .send-icon {
     width: 100%;
     background: rgba(30,32,36,0.95);
     padding: 10px 8px 24px 8px; /* increased bottom padding for nav bar */
+    margin-bottom: 48px;
     display: flex;
     gap: 8px;
     align-items: flex-end;
@@ -570,6 +571,11 @@ button .send-icon {
     width: 36px;
     height: 36px;
     font-size: 1.1em;
+  }
+  .stop-btn {
+    display: block;
+    margin: 0 auto 12px auto;
+    text-align: center;
   }
 }
 
