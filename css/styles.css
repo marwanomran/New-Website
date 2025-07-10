@@ -532,17 +532,16 @@ button .send-icon {
     max-width: 95vw;
   }
   .input-bar {
-    position: sticky;
-    bottom: 0;
+    position: fixed;
     left: 0;
-    width: 100%;
+    bottom: 0;
+    width: 100vw;
     background: rgba(30,32,36,0.95);
-    padding: 10px 8px 24px 8px; /* increased bottom padding for nav bar */
-    margin-bottom: 48px;
+    padding: 10px 8px 24px 8px;
     display: flex;
     gap: 8px;
     align-items: flex-end;
-    z-index: 10;
+    z-index: 100;
     box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.10);
     padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   }
@@ -576,6 +575,8 @@ button .send-icon {
     display: block;
     margin: 0 auto 12px auto;
     text-align: center;
+    position: relative;
+    z-index: 101;
   }
 }
 
