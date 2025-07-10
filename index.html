@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Zain Service Interaction 3.0</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Responsive for ads -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Chat with advanced AI models, upload files, and get instant answers. Modern, accessible, and privacy-focused.">
     <meta property="og:title" content="Zain Service Interaction 3.0">
     <meta property="og:description" content="Chat with advanced AI models, upload files, and get instant answers. Modern, accessible, and privacy-focused.">
@@ -17,7 +17,7 @@
     <meta http-equiv="Expires" content="0">
     <!-- Prism.js CSS theme -->
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/styles.css?v=1.0.1">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.2">
     <!-- AdSense Auto Ads script -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6608592219524355"
             crossorigin="anonymous"></script>
@@ -37,104 +37,153 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link" style="position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden;background:#4CAF50;color:#fff;padding:8px 16px;z-index:10000;">Skip to main content</a>
+    
     <!-- Side AdSense containers -->
-    <div class="ad-label left-ad-label" style="position:fixed;left:0;top:0;width:120px;text-align:center;z-index:51;font-size:0.98em;color:#888;background:transparent;">Advertisement</div>
+    <div class="ad-label left-ad-label" style="position:fixed;left:0;top:0;width:120px;text-align:center;z-index:51;font-size:0.8em;color:#888;background:transparent;">Advertisement</div>
     <ins class="adsbygoogle side-ad left-side-ad"
          style="display:block; position:fixed; left:0; top:24px; height:calc(100vh - 24px); width:120px; z-index:50; text-align:center;"
          data-ad-client="ca-pub-6608592219524355"
          data-ad-slot="1234567893"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <div class="ad-label right-ad-label" style="position:fixed;right:0;top:0;width:120px;text-align:center;z-index:51;font-size:0.98em;color:#888;background:transparent;">Advertisement</div>
+    
+    <div class="ad-label right-ad-label" style="position:fixed;right:0;top:0;width:120px;text-align:center;z-index:51;font-size:0.8em;color:#888;background:transparent;">Advertisement</div>
     <ins class="adsbygoogle side-ad right-side-ad"
          style="display:block; position:fixed; right:0; top:24px; height:calc(100vh - 24px); width:120px; z-index:50; text-align:center;"
          data-ad-client="ca-pub-6608592219524355"
          data-ad-slot="1234567894"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
+    
     <div class="chat-outer">
-      <div class="chat-inner">
-        <main class="container" id="main-content" tabindex="-1" aria-label="Main content">
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
-            <img src="/logo.svg" alt="Site Logo" style="height:40px;width:40px;border-radius:8px;box-shadow:0 2px 8px #0002;" />
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">🌙</button>
-            <span style="font-size:1.5em;font-weight:600;letter-spacing:0.01em;">Zain Service Interaction 3.0</span>
-          </div>
-          <h1 style="display:none;">Interact with Zain Service 3.0</h1>
-          <div class="model-select-group">
-              <label for="modelSelect">Choose Model:</label>
-              <select id="modelSelect" aria-label="Model selection">
-                  <option value="">Loading models...</option>
-              </select>
-          </div>
-          <div id="chatBox" aria-live="polite"></div>
-          <!-- In-content ad placeholder -->
-          <div class="ad-label" style="text-align:center;font-size:0.98em;color:#888;">Advertisement</div>
-          <ins class="adsbygoogle"
-               style="display:block; text-align:center; margin: 16px 0;"
-               data-ad-client="ca-pub-6608592219524355"
-               data-ad-slot="1234567891"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
-          <button id="stopButton" class="stop-btn" style="display:none; margin-bottom: 10px;">⏹ Stop</button>
-          <div class="input-bar">
-              <div class="input-bar-textarea">
-                  <textarea id="userInput" placeholder="Enter your query here..." autocomplete="off" aria-label="User input"></textarea>
-              </div>
-              <div class="input-bar-button">
-                  <button id="attachmentButton" class="attachment-btn" aria-label="Attach file" title="Attach file">
-                      <svg class="attachment-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                      </svg>
-                  </button>
-                  <button id="submitButton" class="send-btn" aria-label="Send">
-                      <span>Send</span>
-                      <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                  </button>
-              </div>
-              <span id="loadingSpinner" class="loading-spinner" style="display:none;"></span>
-          </div>
-          <!-- Hidden file input -->
-          <input type="file" id="fileInput" style="display: none;" multiple accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
-          <!-- File preview area -->
-          <div id="filePreview" class="file-preview" style="display: none;">
-              <div class="file-preview-header">
-                  <span>Attached files:</span>
-                  <button id="clearFiles" class="clear-files-btn" aria-label="Clear all files">×</button>
-              </div>
-              <div id="fileList" class="file-list"></div>
-          </div>
-        </main>
-      </div>
+        <div class="chat-inner">
+            <main class="container" id="main-content" tabindex="-1" aria-label="Main content">
+                <!-- Header section -->
+                <div class="header-section">
+                    <img src="/logo.svg" alt="Site Logo" class="logo" />
+                    <h1 class="site-title">Zain Service Interaction 3.0</h1>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">🌙</button>
+                </div>
+                
+                <!-- Model selection -->
+                <div class="model-select-group">
+                    <label for="modelSelect">Choose Model:</label>
+                    <select id="modelSelect" aria-label="Model selection">
+                        <option value="">Loading models...</option>
+                    </select>
+                </div>
+                
+                <!-- Chat area -->
+                <div id="chatBox" aria-live="polite"></div>
+                
+                <!-- In-content ad -->
+                <div class="ad-label">Advertisement</div>
+                <ins class="adsbygoogle"
+                     style="display:block; text-align:center; margin: 16px 0;"
+                     data-ad-client="ca-pub-6608592219524355"
+                     data-ad-slot="1234567891"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                
+                <!-- Stop button -->
+                <button id="stopButton" class="stop-btn" style="display:none;">⏹ Stop</button>
+                
+                <!-- Input bar -->
+                <div class="input-bar">
+                    <div class="input-bar-textarea">
+                        <textarea id="userInput" placeholder="Enter your query here..." autocomplete="off" aria-label="User input"></textarea>
+                    </div>
+                    <div class="input-bar-button">
+                        <button id="attachmentButton" class="attachment-btn" aria-label="Attach file" title="Attach file">
+                            <svg class="attachment-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                            </svg>
+                        </button>
+                        <button id="submitButton" class="send-btn" aria-label="Send">
+                            <span>Send</span>
+                            <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                    <span id="loadingSpinner" class="loading-spinner" style="display:none;"></span>
+                </div>
+                
+                <!-- Hidden file input -->
+                <input type="file" id="fileInput" style="display: none;" multiple accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif">
+                
+                <!-- File preview area -->
+                <div id="filePreview" class="file-preview" style="display: none;">
+                    <div class="file-preview-header">
+                        <span>Attached files:</span>
+                        <button id="clearFiles" class="clear-files-btn" aria-label="Clear all files">×</button>
+                    </div>
+                    <div id="fileList" class="file-list"></div>
+                </div>
+            </main>
+        </div>
     </div>
-    <!-- Bottom ad placeholder -->
-    <div class="ad-label" style="text-align:center;font-size:0.98em;color:#888;">Advertisement</div>
+    
+    <!-- Bottom ad -->
+    <div class="ad-label">Advertisement</div>
     <ins class="adsbygoogle"
          style="display:block; text-align:center; margin-top: 16px;"
          data-ad-client="ca-pub-6608592219524355"
          data-ad-slot="1234567892"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <footer style="width:100vw;text-align:center;padding:24px 0 16px 0;font-size:1em;color:#888;background:transparent;">
-      <a href="about.html" style="margin:0 18px;color:inherit;text-decoration:underline;">About</a>
-      <a href="privacy.html" style="margin:0 18px;color:inherit;text-decoration:underline;">Privacy Policy</a>
-      <a href="terms.html" style="margin:0 18px;color:inherit;text-decoration:underline;">Terms of Service</a>
-      <a href="contact.html" style="margin:0 18px;color:inherit;text-decoration:underline;">Contact</a>
-      <a href="faq.html" style="margin:0 18px;color:inherit;text-decoration:underline;">FAQ</a>
-      <a href="help.html" style="margin:0 18px;color:inherit;text-decoration:underline;">Help</a>
-      <a href="dmca.html" style="margin:0 18px;color:inherit;text-decoration:underline;">DMCA</a>
-      <span style="display:block;margin-top:12px;font-size:0.95em;color:#b00;">Not intended for users under 13.</span>
+    
+    <!-- Footer -->
+    <footer>
+        <button id="footerMenuBtn" class="footer-menu-btn" aria-label="Open menu" style="display:none;">☰ Menu</button>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact</a>
+            <a href="faq.html">FAQ</a>
+            <a href="help.html">Help</a>
+            <a href="dmca.html">DMCA</a>
+        </div>
+        <span>Not intended for users under 13.</span>
     </footer>
-    <!-- Cookie Consent Banner -->
-    <div id="cookieConsent" style="display:none;position:fixed;bottom:0;left:0;width:100vw;z-index:9999;background:rgba(30,32,36,0.98);color:#fff;padding:18px 12px 18px 12px;text-align:center;font-size:1em;box-shadow:0 -2px 16px 0 rgba(0,0,0,0.10);">
-      This site uses cookies to enhance your experience and show relevant ads. See our <a href="privacy.html" style="color:#4CAF50;text-decoration:underline;">Privacy Policy</a>.
-      <button id="acceptCookies" style="margin-left:18px;padding:8px 18px;background:#4CAF50;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer;">Accept</button>
+    <!-- Footer modal for mobile -->
+    <div id="footerMenuModal" class="footer-menu-modal" style="display:none;">
+        <div class="footer-menu-modal-content">
+            <button id="closeFooterMenu" class="close-footer-menu" aria-label="Close menu">×</button>
+            <a href="about.html">About</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact</a>
+            <a href="faq.html">FAQ</a>
+            <a href="help.html">Help</a>
+            <a href="dmca.html">DMCA</a>
+        </div>
     </div>
-    <script src="/js/scripts.js?v=1.0.1"></script>
+    
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" style="display:none;">
+        This site uses cookies to enhance your experience and show relevant ads. See our <a href="privacy.html" style="color:#4CAF50;text-decoration:underline;">Privacy Policy</a>.
+        <button id="acceptCookies">Accept</button>
+    </div>
+    
+    <script src="/js/scripts.js?v=1.0.2"></script>
     <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-      (adsbygoogle = window.adsbygoogle || []).push({});
-      (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+    <script>
+// Footer menu modal logic
+const menuBtn = document.getElementById('footerMenuBtn');
+const menuModal = document.getElementById('footerMenuModal');
+const closeMenu = document.getElementById('closeFooterMenu');
+if (menuBtn && menuModal && closeMenu) {
+  menuBtn.onclick = () => menuModal.style.display = 'block';
+  closeMenu.onclick = () => menuModal.style.display = 'none';
+  menuModal.onclick = (e) => { if (e.target === menuModal) menuModal.style.display = 'none'; };
+}
+</script>
 </body>
 </html>
