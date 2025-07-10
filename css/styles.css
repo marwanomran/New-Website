@@ -875,3 +875,27 @@ html, body {
   max-height: 100%;
   overflow-y: auto;
 }
+
+/* Remove bottom margin/padding and ensure flush layout */
+.container, .chat-inner, .chat-outer {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  min-height: 0 !important;
+}
+.input-bar {
+  padding-bottom: 0 !important;
+}
+.file-preview[style*="display: none"] {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 700px) {
+  .input-bar {
+    padding-bottom: calc(0px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
