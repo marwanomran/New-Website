@@ -427,7 +427,8 @@ button .send-icon {
 /* --- Desktop styles --- */
 @media (min-width: 701px) {
   .container {
-    max-width: 700px;
+    max-width: 900px;
+    width: 50vw;
     margin: 40px auto 0 auto;
     padding: 0;
     border-radius: 24px;
