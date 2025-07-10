@@ -94,23 +94,11 @@ function escapeHTML(str) {
 }
 
 function parseMarkdownToHTML(text) {
-    // Split on triple backticks, keeping the delimiters
-    const parts = text.split(/(```)/);
-    let html = '';
-    let inCode = false;
-    for (let i = 0; i < parts.length; i++) {
-        if (parts[i] === '```') {
-            inCode = !inCode;
-            continue;
-        }
-        if (inCode) {
-            html += '<pre><code>' + escapeHTML(parts[i]) + '</code></pre>';
-        } else {
-            // Replace newlines with <br> for normal text
-            html += '<span>' + escapeHTML(parts[i]).replace(/\n/g, '<br/>') + '</span>';
-        }
-    }
-    return html;
+    // Replace all code blocks (```code```) with <pre><code>...</code></pre>
+    // This regex matches triple backticks and captures everything between them, non-greedy
+    return text.replace(/```([\s\S]*?)```/g, function(match, code) {
+        return '<pre><code>' + escapeHTML(code) + '</code></pre>';
+    }).replace(/\n/g, '<br/>'); // Replace newlines in the rest of the text with <br>
 }
 
 async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
