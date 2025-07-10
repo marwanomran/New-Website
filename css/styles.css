@@ -665,9 +665,14 @@ html, body {
 }
 
 @media (min-width: 701px) {
-  .chat-inner {
+  .chat-outer {
     width: 80vw;
     max-width: 1400px;
+    min-height: 80vh;
+  }
+  .chat-inner {
+    width: 65vw;
+    max-width: 1100px;
     min-height: 80vh;
   }
 }
