@@ -24,6 +24,70 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('Error loading models:', error);
         modelSelect.innerHTML = '<option value="">Error loading models</option>';
     }
+
+    let isProcessing = false;
+    let abortController = null;
+
+    // Replace event listeners for submitButton with actionButton
+    const actionButton = document.getElementById('actionButton');
+    const userInput = document.getElementById('userInput');
+    const chatBox = document.getElementById('chatBox');
+
+    actionButton.addEventListener('click', async function () {
+        if (isProcessing) {
+            // Stop the stream
+            if (abortController) abortController.abort();
+            return;
+        }
+        // Start sending
+        const query = userInput.value.trim();
+        if (!query) return;
+        userInput.value = '';
+        chatBox.appendChild(createBubble(query, 'userBubble'));
+        chatBox.scrollTop = chatBox.scrollHeight;
+        isProcessing = true;
+        actionButton.textContent = 'Stop Response';
+        userInput.disabled = true;
+        modelSelect.disabled = true;
+        abortController = new AbortController();
+        const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
+        const modelName = modelSelect.value;
+        if (!modelName) {
+            chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
+            isProcessing = false;
+            actionButton.textContent = 'Send Query';
+            userInput.disabled = false;
+            modelSelect.disabled = false;
+            return;
+        }
+        const requestData = {
+            model: modelName,
+            prompt: query
+        };
+        try {
+            await streamOllamaResponse(apiEndpoint, requestData, chatBox, abortController.signal);
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                chatBox.appendChild(createBubble('Response stopped by user.', 'aiBubble'));
+            } else {
+                chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+            }
+        } finally {
+            isProcessing = false;
+            actionButton.textContent = 'Send Query';
+            userInput.disabled = false;
+            modelSelect.disabled = false;
+            abortController = null;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    });
+
+    userInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !isProcessing) {
+            event.preventDefault();
+            actionButton.click();
+        }
+    });
 });
 
 let isProcessing = false;
