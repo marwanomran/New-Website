@@ -94,34 +94,29 @@ function escapeHTML(str) {
 }
 
 function parseMarkdownToHTML(text) {
-    // Simple parser for code blocks (```...```)
+    // Regex-based parser for code blocks (```[lang]?\n...\n```)
+    const codeBlockRegex = /```([\w-]*)\n([\s\S]*?)```/g;
+    let lastIndex = 0;
     let html = '';
-    let inCode = false;
-    let buffer = '';
-    const lines = text.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (line.trim().startsWith('```')) {
-            if (!inCode) {
-                // Start code block
-                inCode = true;
-                html += '<pre><code>';
-            } else {
-                // End code block
-                inCode = false;
-                html += escapeHTML(buffer) + '</code></pre>';
-                buffer = '';
-            }
-        } else if (inCode) {
-            buffer += (buffer ? '\n' : '') + line;
-        } else {
-            html += '<span>' + escapeHTML(line) + '</span><br/>';
+    let match;
+    while ((match = codeBlockRegex.exec(text)) !== null) {
+        // Add text before the code block
+        if (match.index > lastIndex) {
+            html += '<span>' + escapeHTML(text.slice(lastIndex, match.index)) + '</span>';
         }
+        // Add code block
+        const lang = match[1] ? ` class="language-${escapeHTML(match[1])}"` : '';
+        html += `<pre><code${lang}>` + escapeHTML(match[2]) + '</code></pre>';
+        lastIndex = codeBlockRegex.lastIndex;
     }
-    // If code block was not closed
-    if (inCode) {
-        html += escapeHTML(buffer) + '</code></pre>';
+    // Add any remaining text after the last code block
+    if (lastIndex < text.length) {
+        html += '<span>' + escapeHTML(text.slice(lastIndex)) + '</span>';
     }
+    // Replace newlines in non-code text with <br>
+    html = html.replace(/<span>([\s\S]*?)<\/span>/g, function(_, inner) {
+        return '<span>' + inner.replace(/\n/g, '<br/>') + '</span>';
+    });
     return html;
 }
 
