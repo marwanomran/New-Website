@@ -24,64 +24,71 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('Error loading models:', error);
         modelSelect.innerHTML = '<option value="">Error loading models</option>';
     }
-});
 
-document.getElementById('submitButton').addEventListener('click', async function () {
+    let isProcessing = false;
+    let abortController = null;
+
+    const actionButton = document.getElementById('actionButton');
     const userInput = document.getElementById('userInput');
     const chatBox = document.getElementById('chatBox');
-    const submitButton = document.getElementById('submitButton');
-    const modelSelect = document.getElementById('modelSelect');
 
-    // Get the trimmed query input
-    const query = userInput.value.trim();
-
-    if (!query) return;
-
-    // Clear the input box after getting the value
-    userInput.value = '';
-
-    // Append user message bubble
-    chatBox.appendChild(createBubble(query, 'userBubble'));
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    // Disable button to prevent duplicate submissions
-    submitButton.disabled = true;
-
-    const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
-    const modelName = modelSelect.value;
-
-    if (!modelName) {
-        chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
-        submitButton.disabled = false;
-        return;
-    }
-
-    const requestData = {
-        model: modelName,
-        prompt: query
-    };
-
-    try {
-        await streamOllamaResponse(apiEndpoint, requestData, chatBox);
-    } catch (error) {
-        console.error('Error:', error);
-        chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
-    } finally {
+    actionButton.addEventListener('click', async function () {
+        if (isProcessing) {
+            if (abortController) abortController.abort();
+            return;
+        }
+        const query = userInput.value.trim();
+        if (!query) return;
+        userInput.value = '';
+        chatBox.appendChild(createBubble(query, 'userBubble'));
         chatBox.scrollTop = chatBox.scrollHeight;
-        submitButton.disabled = false;
-    }
-});
+        isProcessing = true;
+        actionButton.textContent = 'Stop Response';
+        userInput.disabled = true;
+        modelSelect.disabled = true;
+        abortController = new AbortController();
+        const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
+        const modelName = modelSelect.value;
+        if (!modelName) {
+            chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
+            isProcessing = false;
+            actionButton.textContent = 'Send Query';
+            userInput.disabled = false;
+            modelSelect.disabled = false;
+            return;
+        }
+        const requestData = {
+            model: modelName,
+            prompt: query
+        };
+        try {
+            await streamOllamaResponse(apiEndpoint, requestData, chatBox, abortController.signal);
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                chatBox.appendChild(createBubble('Response stopped by user.', 'aiBubble'));
+            } else {
+                chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+            }
+        } finally {
+            isProcessing = false;
+            actionButton.textContent = 'Send Query';
+            userInput.disabled = false;
+            modelSelect.disabled = false;
+            abortController = null;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    });
 
-// Add event listener for Enter key on the input box
-document.getElementById('userInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent form submission if inside a form
-        document.getElementById('submitButton').click();
-    }
+    userInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !isProcessing) {
+            event.preventDefault();
+            actionButton.click();
+        }
+    });
 });
 
 function escapeHTML(str) {
-    return str.replace(/[&<>"']/g, function(tag) {
+    return str.replace(/[&<>"]'/g, function(tag) {
         const charsToReplace = {
             '&': '&amp;',
             '<': '&lt;',
@@ -109,7 +116,7 @@ function parseMarkdownToHTML(text) {
     return text;
 }
 
-async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
+async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSignal) {
     const aiBubble = createBubble('', 'aiBubble');
     chatBox.appendChild(aiBubble);
 
@@ -130,12 +137,10 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
         if (!inCodeBlock) {
             aiBubble.innerHTML = displayBuffer.replace(/\n/g, '<br/>');
         } else {
-            // Render everything before the code block, then the code block as it grows
             let html = displayBuffer.replace(/\n/g, '<br/>');
             html += `<pre><code${codeBlockLang ? ` class=\"language-${codeBlockLang}\"` : ''}>` + escapeHTML(codeBlockBuffer) + '</code></pre>';
             aiBubble.innerHTML = html;
         }
-        // Apply syntax highlighting to all code blocks
         if (window.Prism) Prism.highlightAll();
     }
 
@@ -148,14 +153,13 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
 
         // State machine for streaming code block
         if (!inCodeBlock) {
-            // Look for opening triple backticks
             if (backtickBuffer.length < 3) {
                 if (char === '`') {
                     backtickBuffer += '`';
                     if (backtickBuffer.length === 3) {
                         afterOpenTicks = true;
                         langBuffer = '';
-                        return typeNextChar(); // Don't display the backticks
+                        return typeNextChar();
                     } else {
                         displayBuffer += char;
                         updateBubble();
@@ -173,7 +177,6 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
                     return;
                 }
             } else if (afterOpenTicks) {
-                // After ```, collect language specifier until first non-space/newline/letter
                 if (char === '\n' || char === ' ' || char === '\r') {
                     inCodeBlock = true;
                     codeBlockLang = langBuffer.trim();
@@ -190,12 +193,10 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
                 }
             }
         } else {
-            // Inside code block, look for closing triple backticks
             if (backtickBuffer.length < 3) {
                 if (char === '`') {
                     backtickBuffer += '`';
                     if (backtickBuffer.length === 3) {
-                        // End code block
                         inCodeBlock = false;
                         codeBlockOpen = false;
                         backtickBuffer = '';
@@ -218,14 +219,14 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
                 }
             }
         }
-        // Fallback (should not reach here)
         setTimeout(typeNextChar, 20);
     }
 
     const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestData),
+        signal: abortSignal
     });
 
     if (!response.body) {
@@ -238,13 +239,13 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
     let buffer = '';
 
     while (true) {
+        if (abortSignal.aborted) throw new DOMException('Aborted', 'AbortError');
         const { value, done } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
 
-        // Split buffer into lines (Ollama returns JSON per line)
         let lines = buffer.split('\n');
-        buffer = lines.pop(); // Last line may be incomplete, keep it in buffer
+        buffer = lines.pop();
 
         for (const line of lines) {
             if (!line.trim()) continue;
@@ -264,7 +265,6 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
             }
         }
     }
-    // Handle any remaining buffer
     if (buffer.trim()) {
         try {
             const obj = JSON.parse(buffer);
