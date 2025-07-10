@@ -923,3 +923,38 @@ html, body {
   font-weight: bold;
   font-size: 1.2em;
 }
+
+/* Side AdSense containers */
+.side-ad {
+  display: block;
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 120px;
+  z-index: 50;
+  text-align: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.left-side-ad {
+  left: 0;
+}
+.right-side-ad {
+  right: 0;
+}
+@media (max-width: 1100px) {
+  .side-ad {
+    display: none !important;
+  }
+  .chat-outer {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+@media (min-width: 1101px) {
+  .chat-outer {
+    padding-left: 130px;
+    padding-right: 130px;
+  }
+}
