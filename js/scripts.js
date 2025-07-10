@@ -113,18 +113,113 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
     const aiBubble = createBubble('', 'aiBubble');
     chatBox.appendChild(aiBubble);
 
-    let fullResponse = '';
     let charQueue = [];
     let typing = false;
 
-    function typeNextChar() {
-        if (charQueue.length > 0) {
-            fullResponse += charQueue.shift();
-            aiBubble.innerHTML = parseMarkdownToHTML(fullResponse);
-            setTimeout(typeNextChar, 20); // 20ms per character
+    // State for streaming code block rendering
+    let displayBuffer = '';
+    let inCodeBlock = false;
+    let codeBlockLang = '';
+    let codeBlockBuffer = '';
+    let codeBlockOpen = false;
+    let backtickBuffer = '';
+    let langBuffer = '';
+    let afterOpenTicks = false;
+
+    function updateBubble() {
+        if (!inCodeBlock) {
+            aiBubble.innerHTML = displayBuffer.replace(/\n/g, '<br/>');
         } else {
-            typing = false;
+            // Render everything before the code block, then the code block as it grows
+            let html = displayBuffer.replace(/\n/g, '<br/>');
+            html += `<pre><code${codeBlockLang ? ` class=\"language-${codeBlockLang}\"` : ''}>` + escapeHTML(codeBlockBuffer) + '</code></pre>';
+            aiBubble.innerHTML = html;
         }
+        // Apply syntax highlighting to all code blocks
+        if (window.Prism) Prism.highlightAll();
+    }
+
+    function typeNextChar() {
+        if (charQueue.length === 0) {
+            typing = false;
+            return;
+        }
+        let char = charQueue.shift();
+
+        // State machine for streaming code block
+        if (!inCodeBlock) {
+            // Look for opening triple backticks
+            if (backtickBuffer.length < 3) {
+                if (char === '`') {
+                    backtickBuffer += '`';
+                    if (backtickBuffer.length === 3) {
+                        afterOpenTicks = true;
+                        langBuffer = '';
+                        return typeNextChar(); // Don't display the backticks
+                    } else {
+                        displayBuffer += char;
+                        updateBubble();
+                        setTimeout(typeNextChar, 20);
+                        return;
+                    }
+                } else {
+                    if (backtickBuffer.length > 0) {
+                        displayBuffer += backtickBuffer;
+                        backtickBuffer = '';
+                    }
+                    displayBuffer += char;
+                    updateBubble();
+                    setTimeout(typeNextChar, 20);
+                    return;
+                }
+            } else if (afterOpenTicks) {
+                // After ```, collect language specifier until first non-space/newline/letter
+                if (char === '\n' || char === ' ' || char === '\r') {
+                    inCodeBlock = true;
+                    codeBlockLang = langBuffer.trim();
+                    codeBlockBuffer = '';
+                    codeBlockOpen = true;
+                    afterOpenTicks = false;
+                    updateBubble();
+                    setTimeout(typeNextChar, 20);
+                    return;
+                } else {
+                    langBuffer += char;
+                    setTimeout(typeNextChar, 20);
+                    return;
+                }
+            }
+        } else {
+            // Inside code block, look for closing triple backticks
+            if (backtickBuffer.length < 3) {
+                if (char === '`') {
+                    backtickBuffer += '`';
+                    if (backtickBuffer.length === 3) {
+                        // End code block
+                        inCodeBlock = false;
+                        codeBlockOpen = false;
+                        backtickBuffer = '';
+                        updateBubble();
+                        setTimeout(typeNextChar, 20);
+                        return;
+                    } else {
+                        setTimeout(typeNextChar, 20);
+                        return;
+                    }
+                } else {
+                    if (backtickBuffer.length > 0) {
+                        codeBlockBuffer += backtickBuffer;
+                        backtickBuffer = '';
+                    }
+                    codeBlockBuffer += char;
+                    updateBubble();
+                    setTimeout(typeNextChar, 20);
+                    return;
+                }
+            }
+        }
+        // Fallback (should not reach here)
+        setTimeout(typeNextChar, 20);
     }
 
     const response = await fetch(apiEndpoint, {
