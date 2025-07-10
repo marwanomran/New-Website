@@ -899,3 +899,27 @@ html, body {
     padding-bottom: calc(0px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* Unique thinking bubble for reasoning models */
+.thinking-bubble {
+  background: linear-gradient(90deg, #232323 60%, #4CAF50 100%);
+  color: #fff;
+  font-style: italic;
+  opacity: 0.92;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.08em;
+  border: 2px dashed #4CAF50;
+  animation: fadeInBubble 0.4s;
+}
+.thinking-dots {
+  display: inline-block;
+  letter-spacing: 2px;
+}
+.thinking-dots .dot {
+  opacity: 0.2;
+  transition: opacity 0.2s;
+  font-weight: bold;
+  font-size: 1.2em;
+}

@@ -365,10 +365,33 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSign
     const aiBubble = createBubble('', 'aiBubble');
     chatBox.appendChild(aiBubble);
 
-    let charQueue = [];
+    // Reasoning model detection
+    const reasoningModelPatterns = [/reason/i, /deepseek/i, /llama/i];
+    const modelName = requestData.model || '';
+    let isReasoningModel = reasoningModelPatterns.some(re => re.test(modelName));
+    let thinkingBubble = null;
+    let thinkingInterval = null;
+    if (isReasoningModel) {
+        thinkingBubble = document.createElement('div');
+        thinkingBubble.className = 'bubble aiBubble thinking-bubble';
+        thinkingBubble.innerHTML = '<span class="thinking-dots">Thinking<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span>';
+        chatBox.appendChild(thinkingBubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        // Animate dots
+        let dotCount = 0;
+        thinkingInterval = setInterval(() => {
+            const dots = thinkingBubble.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.style.opacity = (i <= dotCount % 3) ? '1' : '0.2';
+            });
+            dotCount++;
+        }, 400);
+    }
+
+    let wordQueue = [];
     let typing = false;
 
-    // State for streaming code block rendering
+    // State for streaming code block rendering (unchanged)
     let displayBuffer = '';
     let inCodeBlock = false;
     let codeBlockLang = '';
@@ -391,88 +414,85 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSign
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    function typeNextChar() {
-        if (charQueue.length === 0) {
+    function typeNextWord() {
+        if (wordQueue.length === 0) {
             typing = false;
             return;
         }
-        let char = charQueue.shift();
+        let word = wordQueue.shift();
 
-        // State machine for streaming code block
-        if (!inCodeBlock) {
-            if (backtickBuffer.length < 3) {
-                if (char === '`') {
-                    backtickBuffer += '`';
-                    if (backtickBuffer.length === 3) {
-                        afterOpenTicks = true;
-                        langBuffer = '';
-                        return typeNextChar();
+        // Remove thinking bubble on first word
+        if (thinkingBubble) {
+            thinkingBubble.remove();
+            thinkingBubble = null;
+            if (thinkingInterval) clearInterval(thinkingInterval);
+        }
+
+        // State machine for streaming code block (word by word)
+        for (let i = 0; i < word.length; i++) {
+            let char = word[i];
+            // (same code block logic as before, but per char)
+            if (!inCodeBlock) {
+                if (backtickBuffer.length < 3) {
+                    if (char === '`') {
+                        backtickBuffer += '`';
+                        if (backtickBuffer.length === 3) {
+                            afterOpenTicks = true;
+                            langBuffer = '';
+                            continue;
+                        } else {
+                            displayBuffer += char;
+                            continue;
+                        }
                     } else {
+                        if (backtickBuffer.length > 0) {
+                            displayBuffer += backtickBuffer;
+                            backtickBuffer = '';
+                        }
                         displayBuffer += char;
-                        updateBubble();
-                        setTimeout(typeNextChar, 20);
-                        return;
+                        continue;
                     }
-                } else {
-                    if (backtickBuffer.length > 0) {
-                        displayBuffer += backtickBuffer;
-                        backtickBuffer = '';
-                    }
-                    displayBuffer += char;
-                    updateBubble();
-                    setTimeout(typeNextChar, 20);
-                    return;
-                }
-            } else if (afterOpenTicks) {
-                // After ```, collect language specifier until first non-alphanumeric
-                if (!/^[a-zA-Z0-9]$/.test(char)) {
-                    inCodeBlock = true;
-                    codeBlockLang = langBuffer.trim();
-                    codeBlockBuffer = '';
-                    codeBlockOpen = true;
-                    afterOpenTicks = false;
-                    // If the current char is not whitespace, treat it as the first code char
-                    if (char !== '\n' && char !== ' ' && char !== '\r') {
-                        codeBlockBuffer += char;
-                    }
-                    updateBubble();
-                    setTimeout(typeNextChar, 20);
-                    return;
-                } else {
-                    langBuffer += char;
-                    setTimeout(typeNextChar, 20);
-                    return;
-                }
-            }
-        } else {
-            // Inside code block, look for closing triple backticks
-            if (backtickBuffer.length < 3) {
-                if (char === '`') {
-                    backtickBuffer += '`';
-                    if (backtickBuffer.length === 3) {
-                        inCodeBlock = false;
-                        codeBlockOpen = false;
-                        backtickBuffer = '';
-                        updateBubble();
-                        setTimeout(typeNextChar, 20);
-                        return;
+                } else if (afterOpenTicks) {
+                    if (!/^[a-zA-Z0-9]$/.test(char)) {
+                        inCodeBlock = true;
+                        codeBlockLang = langBuffer.trim();
+                        codeBlockBuffer = '';
+                        codeBlockOpen = true;
+                        afterOpenTicks = false;
+                        if (char !== '\n' && char !== ' ' && char !== '\r') {
+                            codeBlockBuffer += char;
+                        }
+                        continue;
                     } else {
-                        setTimeout(typeNextChar, 20);
-                        return;
+                        langBuffer += char;
+                        continue;
                     }
-                } else {
-                    if (backtickBuffer.length > 0) {
-                        codeBlockBuffer += backtickBuffer;
-                        backtickBuffer = '';
+                }
+            } else {
+                if (backtickBuffer.length < 3) {
+                    if (char === '`') {
+                        backtickBuffer += '`';
+                        if (backtickBuffer.length === 3) {
+                            inCodeBlock = false;
+                            codeBlockOpen = false;
+                            backtickBuffer = '';
+                            continue;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        if (backtickBuffer.length > 0) {
+                            codeBlockBuffer += backtickBuffer;
+                            backtickBuffer = '';
+                        }
+                        codeBlockBuffer += char;
+                        continue;
                     }
-                    codeBlockBuffer += char;
-                    updateBubble();
-                    setTimeout(typeNextChar, 20);
-                    return;
                 }
             }
         }
-        setTimeout(typeNextChar, 20);
+        updateBubble();
+        setTimeout(typeNextWord, 120); // word-by-word speed
     }
 
     const response = await fetch(apiEndpoint, {
@@ -504,12 +524,14 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSign
             try {
                 const obj = JSON.parse(line);
                 if (obj.response && obj.response.trim() !== '') {
-                    for (const char of obj.response) {
-                        charQueue.push(char);
+                    // Split into words (preserve whitespace)
+                    const words = obj.response.match(/\S+\s*/g) || [];
+                    for (const word of words) {
+                        wordQueue.push(word);
                     }
                     if (!typing) {
                         typing = true;
-                        typeNextChar();
+                        typeNextWord();
                     }
                 }
             } catch (e) {
@@ -521,12 +543,13 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSign
         try {
             const obj = JSON.parse(buffer);
             if (obj.response && obj.response.trim() !== '') {
-                for (const char of obj.response) {
-                    charQueue.push(char);
+                const words = obj.response.match(/\S+\s*/g) || [];
+                for (const word of words) {
+                    wordQueue.push(word);
                 }
                 if (!typing) {
                     typing = true;
-                    typeNextChar();
+                    typeNextWord();
                 }
             }
         } catch (e) {}
