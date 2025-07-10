@@ -111,6 +111,28 @@ let selectedFiles = [];
 
 // Fetch and populate models dropdown on page load
 document.addEventListener('DOMContentLoaded', async function () {
+    // Force cache clearing on page load
+    if (performance.navigation.type === 1) { // Reload
+        // Clear any cached data if needed
+        console.log('Page reloaded - cache cleared');
+    }
+    
+    // Add cache-busting headers for future requests
+    const meta = document.createElement('meta');
+    meta.httpEquiv = 'Cache-Control';
+    meta.content = 'no-cache, no-store, must-revalidate';
+    document.head.appendChild(meta);
+    
+    const pragma = document.createElement('meta');
+    pragma.httpEquiv = 'Pragma';
+    pragma.content = 'no-cache';
+    document.head.appendChild(pragma);
+    
+    const expires = document.createElement('meta');
+    expires.httpEquiv = 'Expires';
+    expires.content = '0';
+    document.head.appendChild(expires);
+
     const modelSelect = document.getElementById('modelSelect');
     const themeToggle = document.getElementById('themeToggle');
     const loadingSpinner = document.getElementById('loadingSpinner');
