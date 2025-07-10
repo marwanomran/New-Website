@@ -9,6 +9,66 @@ function createBubble(content, className) {
 // Fetch and populate models dropdown on page load
 document.addEventListener('DOMContentLoaded', async function () {
     const modelSelect = document.getElementById('modelSelect');
+    const themeToggle = document.getElementById('themeToggle');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const body = document.body;
+
+    // SVG background pattern for extra flair
+    function setBackgroundPattern(isLight) {
+        const patternId = 'bg-svg-pattern';
+        let existing = document.getElementById(patternId);
+        if (existing) existing.remove();
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('id', patternId);
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.setAttribute('style', 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;');
+        svg.innerHTML = isLight
+            ? '<defs><pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1.5" fill="#b0b0b0" opacity="0.18"/></pattern></defs><rect width="100%" height="100%" fill="url(#dots)"/>'
+            : '<defs><pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1.5" fill="#4CAF50" opacity="0.08"/></pattern></defs><rect width="100%" height="100%" fill="url(#dots)"/>';
+        document.body.appendChild(svg);
+    }
+
+    // Fade animation for theme switch
+    function fadeThemeSwitch(callback) {
+        body.style.transition = 'background 0.5s, color 0.5s';
+        body.classList.add('theme-fade');
+        setTimeout(() => {
+            callback();
+            setTimeout(() => {
+                body.classList.remove('theme-fade');
+            }, 500);
+        }, 10);
+    }
+
+    // Theme preference logic
+    function setTheme(mode, save) {
+        fadeThemeSwitch(() => {
+            if (mode === 'light') {
+                body.classList.add('light-mode');
+                themeToggle.textContent = '☀️';
+                setBackgroundPattern(true);
+            } else {
+                body.classList.remove('light-mode');
+                themeToggle.textContent = '🌙';
+                setBackgroundPattern(false);
+            }
+            if (save) localStorage.setItem('theme', mode);
+        });
+    }
+
+    // On load: check localStorage, else system preference
+    let theme = localStorage.getItem('theme');
+    if (!theme) {
+        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    setTheme(theme, false);
+
+    themeToggle.addEventListener('click', function() {
+        const isLight = body.classList.contains('light-mode');
+        setTheme(isLight ? 'dark' : 'light', true);
+    });
+
     try {
         const response = await fetch('https://3dsoftwareemergence.dpdns.org:443/api/tags');
         if (!response.ok) throw new Error('Failed to load models');
@@ -24,60 +84,65 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('Error loading models:', error);
         modelSelect.innerHTML = '<option value="">Error loading models</option>';
     }
-});
 
-document.getElementById('submitButton').addEventListener('click', async function () {
-    const userInput = document.getElementById('userInput');
-    const chatBox = document.getElementById('chatBox');
-    const submitButton = document.getElementById('submitButton');
-    const modelSelect = document.getElementById('modelSelect');
+    document.getElementById('submitButton').addEventListener('click', async function () {
+        const userInput = document.getElementById('userInput');
+        const chatBox = document.getElementById('chatBox');
+        const submitButton = document.getElementById('submitButton');
+        const modelSelect = document.getElementById('modelSelect');
 
-    // Get the trimmed query input
-    const query = userInput.value.trim();
+        // Get the trimmed query input
+        const query = userInput.value.trim();
 
-    if (!query) return;
+        if (!query) return;
 
-    // Clear the input box after getting the value
-    userInput.value = '';
+        // Clear the input box after getting the value
+        userInput.value = '';
 
-    // Append user message bubble
-    chatBox.appendChild(createBubble(query, 'userBubble'));
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    // Disable button to prevent duplicate submissions
-    submitButton.disabled = true;
-
-    const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
-    const modelName = modelSelect.value;
-
-    if (!modelName) {
-        chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
-        submitButton.disabled = false;
-        return;
-    }
-
-    const requestData = {
-        model: modelName,
-        prompt: query
-    };
-
-    try {
-        await streamOllamaResponse(apiEndpoint, requestData, chatBox);
-    } catch (error) {
-        console.error('Error:', error);
-        chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
-    } finally {
+        // Append user message bubble
+        chatBox.appendChild(createBubble(query, 'userBubble'));
         chatBox.scrollTop = chatBox.scrollHeight;
-        submitButton.disabled = false;
-    }
-});
 
-// Add event listener for Enter key on the input box
-document.getElementById('userInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent form submission if inside a form
-        document.getElementById('submitButton').click();
-    }
+        // Disable button to prevent duplicate submissions
+        submitButton.disabled = true;
+
+        // Show loading spinner
+        loadingSpinner.style.display = 'inline-block';
+
+        const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
+        const modelName = modelSelect.value;
+
+        if (!modelName) {
+            chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
+            submitButton.disabled = false;
+            return;
+        }
+
+        const requestData = {
+            model: modelName,
+            prompt: query
+        };
+
+        try {
+            await streamOllamaResponse(apiEndpoint, requestData, chatBox);
+        } catch (error) {
+            console.error('Error:', error);
+            chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+        } finally {
+            chatBox.scrollTop = chatBox.scrollHeight;
+            submitButton.disabled = false;
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
+        }
+    });
+
+    // Add event listener for Enter key on the input box
+    document.getElementById('userInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission if inside a form
+            document.getElementById('submitButton').click();
+        }
+    });
 });
 
 function escapeHTML(str) {
@@ -135,6 +200,8 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
             aiBubble.innerHTML = html;
         }
         if (window.Prism) Prism.highlightAll();
+        // Auto-scroll chat to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     function typeNextChar() {
