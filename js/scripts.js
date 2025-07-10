@@ -80,6 +80,51 @@ document.getElementById('userInput').addEventListener('keydown', function(event)
     }
 });
 
+function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, function(tag) {
+        const charsToReplace = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        };
+        return charsToReplace[tag] || tag;
+    });
+}
+
+function parseMarkdownToHTML(text) {
+    // Simple parser for code blocks (```...```)
+    let html = '';
+    let inCode = false;
+    let buffer = '';
+    const lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.trim().startsWith('```')) {
+            if (!inCode) {
+                // Start code block
+                inCode = true;
+                html += '<pre><code>';
+            } else {
+                // End code block
+                inCode = false;
+                html += escapeHTML(buffer) + '</code></pre>';
+                buffer = '';
+            }
+        } else if (inCode) {
+            buffer += (buffer ? '\n' : '') + line;
+        } else {
+            html += '<span>' + escapeHTML(line) + '</span><br/>';
+        }
+    }
+    // If code block was not closed
+    if (inCode) {
+        html += escapeHTML(buffer) + '</code></pre>';
+    }
+    return html;
+}
+
 async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
     const aiBubble = createBubble('', 'aiBubble');
     chatBox.appendChild(aiBubble);
@@ -90,7 +135,8 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
 
     function typeNextChar() {
         if (charQueue.length > 0) {
-            aiBubble.textContent += charQueue.shift();
+            fullResponse += charQueue.shift();
+            aiBubble.innerHTML = parseMarkdownToHTML(fullResponse);
             setTimeout(typeNextChar, 20); // 20ms per character
         } else {
             typing = false;
@@ -126,12 +172,9 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
             try {
                 const obj = JSON.parse(line);
                 if (obj.response && obj.response.trim() !== '') {
-                    fullResponse += obj.response;
-                    // Add new characters to the queue
                     for (const char of obj.response) {
                         charQueue.push(char);
                     }
-                    // Start typing if not already in progress
                     if (!typing) {
                         typing = true;
                         typeNextChar();
@@ -147,7 +190,6 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
         try {
             const obj = JSON.parse(buffer);
             if (obj.response && obj.response.trim() !== '') {
-                fullResponse += obj.response;
                 for (const char of obj.response) {
                     charQueue.push(char);
                 }
