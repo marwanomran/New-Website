@@ -6,12 +6,120 @@ function createBubble(content, className) {
     return bubble;
 }
 
+// File attachment utilities
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function getFileIcon(fileType) {
+    const icons = {
+        'text/plain': '📄',
+        'application/pdf': '📕',
+        'application/msword': '📘',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '📘',
+        'image/jpeg': '🖼️',
+        'image/jpg': '🖼️',
+        'image/png': '🖼️',
+        'image/gif': '🖼️'
+    };
+    return icons[fileType] || '📎';
+}
+
+function createFileItem(file) {
+    const fileItem = document.createElement('div');
+    fileItem.className = 'file-item';
+    fileItem.dataset.fileName = file.name;
+    
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'file-info';
+    
+    const fileIcon = document.createElement('span');
+    fileIcon.className = 'file-icon';
+    fileIcon.textContent = getFileIcon(file.type);
+    
+    const fileDetails = document.createElement('div');
+    fileDetails.className = 'file-details';
+    
+    const fileName = document.createElement('div');
+    fileName.className = 'file-name';
+    fileName.textContent = file.name;
+    
+    const fileSize = document.createElement('div');
+    fileSize.className = 'file-size';
+    fileSize.textContent = formatFileSize(file.size);
+    
+    fileDetails.appendChild(fileName);
+    fileDetails.appendChild(fileSize);
+    fileInfo.appendChild(fileIcon);
+    fileInfo.appendChild(fileDetails);
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-file-btn';
+    removeBtn.textContent = '×';
+    removeBtn.onclick = () => removeFile(file.name);
+    
+    fileItem.appendChild(fileInfo);
+    fileItem.appendChild(removeBtn);
+    
+    return fileItem;
+}
+
+function removeFile(fileName) {
+    const fileList = document.getElementById('fileList');
+    const fileItem = fileList.querySelector(`[data-file-name="${fileName}"]`);
+    if (fileItem) {
+        fileItem.remove();
+        // Remove from selectedFiles array
+        selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+        
+        // Hide file preview if no files left
+        if (selectedFiles.length === 0) {
+            document.getElementById('filePreview').style.display = 'none';
+        }
+    }
+}
+
+function clearAllFiles() {
+    selectedFiles = [];
+    document.getElementById('fileList').innerHTML = '';
+    document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('fileInput').value = '';
+}
+
+// Function to read file contents
+async function readFileContent(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = (e) => reject(e);
+        
+        if (file.type.startsWith('text/') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+            reader.readAsText(file);
+        } else {
+            // For non-text files, just return a placeholder
+            resolve(`[Binary file: ${file.name}]`);
+        }
+    });
+}
+
+// Global variable to store selected files
+let selectedFiles = [];
+
 // Fetch and populate models dropdown on page load
 document.addEventListener('DOMContentLoaded', async function () {
     const modelSelect = document.getElementById('modelSelect');
     const themeToggle = document.getElementById('themeToggle');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const body = document.body;
+    const attachmentButton = document.getElementById('attachmentButton');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+    const fileList = document.getElementById('fileList');
+    const clearFilesBtn = document.getElementById('clearFiles');
 
     // SVG background pattern for extra flair
     function setBackgroundPattern(isLight) {
@@ -69,6 +177,28 @@ document.addEventListener('DOMContentLoaded', async function () {
         setTheme(isLight ? 'dark' : 'light', true);
     });
 
+    // File attachment event listeners
+    attachmentButton.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function(event) {
+        const files = Array.from(event.target.files);
+        files.forEach(file => {
+            // Check if file is already selected
+            if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                selectedFiles.push(file);
+                fileList.appendChild(createFileItem(file));
+            }
+        });
+        
+        if (selectedFiles.length > 0) {
+            filePreview.style.display = 'block';
+        }
+    });
+
+    clearFilesBtn.addEventListener('click', clearAllFiles);
+
     try {
         const response = await fetch('https://3dsoftwareemergence.dpdns.org:443/api/tags');
         if (!response.ok) throw new Error('Failed to load models');
@@ -97,14 +227,35 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Get the trimmed query input
         const query = userInput.value.trim();
 
-        if (!query) return;
+        if (!query && selectedFiles.length === 0) return;
 
         // Clear the input box after getting the value
         userInput.value = '';
 
+        // Prepare message content with files
+        let messageContent = query;
+        if (selectedFiles.length > 0) {
+            messageContent += '\n\n--- Attached Files ---\n';
+            
+            // Read file contents
+            for (const file of selectedFiles) {
+                messageContent += `\nFile: ${file.name} (${formatFileSize(file.size)})\n`;
+                try {
+                    const fileContent = await readFileContent(file);
+                    messageContent += `Content:\n${fileContent}\n`;
+                } catch (error) {
+                    messageContent += `Error reading file: ${error.message}\n`;
+                }
+                messageContent += '---\n';
+            }
+        }
+
         // Append user message bubble
-        chatBox.appendChild(createBubble(query, 'userBubble'));
+        chatBox.appendChild(createBubble(messageContent, 'userBubble'));
         chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Clear attached files after sending
+        clearAllFiles();
 
         // Disable button to prevent duplicate submissions
         submitButton.disabled = true;
