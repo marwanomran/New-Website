@@ -345,65 +345,154 @@ button .send-icon {
     box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
 }
 
-@media (max-width: 700px) {
-    .container {
-        max-width: 100vw;
-        margin: 0;
-        border-radius: 0;
-        box-shadow: none;
-        min-height: 100vh;
-    }
-    h1 {
-        font-size: 1.2em;
-        margin: 18px 0 10px 0;
-    }
-    .model-select-group {
-        margin: 0 8px 12px 8px;
-    }
-    #chatBox {
-        padding: 12px 8px 8px 8px;
-        font-size: 15px;
-        min-height: 200px;
-        max-height: 40vh;
-    }
-    .bubble {
-        font-size: 15px;
-        padding: 8px 10px;
-        max-width: 95vw;
-    }
-    .input-bar {
-        padding: 10px 8px 12px 8px;
-    }
-    textarea, button {
-        font-size: 15px;
-        padding: 12px 8px;
-        margin-top: 0;
-    }
-    pre, code {
-        font-size: 13px;
-        padding: 6px;
-    }
-    .theme-toggle {
-        top: 10px;
-        right: 10px;
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-    }
+/* --- Desktop styles --- */
+@media (min-width: 701px) {
+  .container {
+    max-width: 700px;
+    margin: 40px auto 0 auto;
+    padding: 0;
+    border-radius: 24px;
+    background: rgba(30, 32, 36, 0.92);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+    min-height: 80vh;
+    position: relative;
+  }
+  .theme-toggle {
+    top: 32px;
+    right: 40px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.5em;
+  }
+  .input-bar {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(30,32,36,0.95);
+    padding: 20px 40px 28px 40px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    z-index: 10;
+    box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.10);
+  }
+  .input-bar textarea {
+    font-size: 1.08em;
+    min-height: 44px;
+    max-height: 120px;
+    padding: 14px 18px;
+  }
+  .input-bar button, .input-bar .send-btn {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 1em;
+  }
+  .input-bar .send-btn .send-icon {
+    width: 1em;
+    height: 1em;
+    min-width: 1em;
+    min-height: 1em;
+  }
+  #chatBox {
+    padding: 36px 40px 20px 40px;
+    max-height: 60vh;
+    min-height: 300px;
+    gap: 18px;
+  }
+  .bubble {
+    max-width: 60%;
+    padding: 16px 22px;
+    font-size: 1.08em;
+  }
 }
 
-@media (min-width: 701px) {
-    button, .send-btn {
-        min-width: 36px;
-        min-height: 36px;
-        padding: 0 10px;
-        font-size: 0.98em;
-    }
-    button .send-icon {
-        width: 0.95em;
-        height: 0.95em;
-        margin-left: 2px;
-    }
+/* --- Mobile styles --- */
+@media (max-width: 700px) {
+  .container {
+    max-width: 100vw;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+    padding: 0;
+  }
+  h1 {
+    font-size: 1.2em;
+    margin: 18px 0 10px 0;
+  }
+  .model-select-group {
+    margin: 0 8px 12px 8px;
+  }
+  #chatBox {
+    padding: 12px 8px 8px 8px;
+    font-size: 15px;
+    min-height: 200px;
+    max-height: 40vh;
+    gap: 10px;
+  }
+  .bubble {
+    font-size: 15px;
+    padding: 10px 12px;
+    max-width: 95vw;
+  }
+  .input-bar {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(30,32,36,0.95);
+    padding: 10px 8px 14px 8px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    z-index: 10;
+    box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.10);
+  }
+  .input-bar textarea {
+    font-size: 15px;
+    min-height: 40px;
+    max-height: 100px;
+    padding: 10px 8px;
+  }
+  .input-bar button, .input-bar .send-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 1.08em;
+  }
+  .input-bar .send-btn .send-icon {
+    width: 1.1em;
+    height: 1.1em;
+    min-width: 1.1em;
+    min-height: 1.1em;
+  }
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1em;
+  }
+}
+
+/* --- Shared styles (remain as before, but remove width: 100% from button/textarea) --- */
+.input-bar textarea {
+  flex: 1 1 auto;
+  width: auto;
+}
+.input-bar button, .input-bar .send-btn {
+  flex: 0 0 auto;
+  width: auto;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input-bar .send-btn .send-icon {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 html, body {
