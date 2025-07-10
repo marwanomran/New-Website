@@ -96,6 +96,7 @@ body.light-mode .adsbygoogle {
     display: flex;
     flex-direction: column;
     min-height: 80vh;
+    position: relative;
 }
 
 h1 {
