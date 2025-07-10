@@ -251,12 +251,17 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSign
                     return;
                 }
             } else if (afterOpenTicks) {
-                if (char === '\n' || char === ' ' || char === '\r') {
+                // After ```, collect language specifier until first non-alphanumeric
+                if (!/^[a-zA-Z0-9]$/.test(char)) {
                     inCodeBlock = true;
                     codeBlockLang = langBuffer.trim();
                     codeBlockBuffer = '';
                     codeBlockOpen = true;
                     afterOpenTicks = false;
+                    // If the current char is not whitespace, treat it as the first code char
+                    if (char !== '\n' && char !== ' ' && char !== '\r') {
+                        codeBlockBuffer += char;
+                    }
                     updateBubble();
                     setTimeout(typeNextChar, 20);
                     return;
@@ -267,6 +272,7 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSign
                 }
             }
         } else {
+            // Inside code block, look for closing triple backticks
             if (backtickBuffer.length < 3) {
                 if (char === '`') {
                     backtickBuffer += '`';
