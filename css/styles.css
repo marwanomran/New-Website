@@ -108,19 +108,20 @@ h1 {
     letter-spacing: 0.01em;
 }
 
+/* --- Modern model select styles (apply everywhere) --- */
 .model-select-group {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 0 32px 18px 32px;
+    margin-bottom: 18px;
+    margin-left: 0;
+    margin-right: 0;
 }
-
 .model-select-group label {
     font-size: 1.1em;
-    color: #fafafa;
+    color: inherit;
     font-weight: 500;
 }
-
 #modelSelect {
     padding: 10px 18px;
     border-radius: 8px;
@@ -135,10 +136,25 @@ h1 {
     -webkit-appearance: none;
     -moz-appearance: none;
     cursor: pointer;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%234CAF50" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px 18px;
+    padding-right: 36px;
 }
 #modelSelect:focus, #modelSelect:hover {
     border: 1.5px solid #4CAF50;
     box-shadow: 0 0 0 2px #4CAF5040;
+}
+body.light-mode #modelSelect {
+    background: #f5f7fa;
+    color: #232323;
+    border: 1.5px solid #bbb;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23388e3c" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+}
+body.light-mode #modelSelect:focus, body.light-mode #modelSelect:hover {
+    border: 1.5px solid #388e3c;
+    box-shadow: 0 0 0 2px #4CAF5020;
 }
 
 #chatBox {
@@ -250,6 +266,46 @@ code {
     vertical-align: middle;
 }
 
+/* --- Input bar and send button fixes --- */
+.input-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+.input-bar-textarea {
+    flex: 1 1 auto;
+    display: flex;
+}
+.input-bar-textarea textarea {
+    flex: 1 1 auto;
+    width: 100%;
+}
+.input-bar-button {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+.input-bar-button button,
+.input-bar-button .send-btn {
+    height: 44px;
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.input-bar .send-btn .send-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 textarea {
     flex: 1 1 auto;
     resize: vertical;
@@ -351,6 +407,18 @@ button .send-icon {
     box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
 }
 
+/* --- Container and theme toggle fixes --- */
+.container {
+    position: relative;
+    overflow: visible;
+}
+.theme-toggle {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    z-index: 100;
+}
+
 /* --- Desktop styles --- */
 @media (min-width: 701px) {
   .container {
@@ -361,7 +429,6 @@ button .send-icon {
     background: rgba(30, 32, 36, 0.92);
     box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
     min-height: 80vh;
-    position: relative;
   }
   .theme-toggle {
     top: 32px;
@@ -388,18 +455,6 @@ button .send-icon {
     min-height: 44px;
     max-height: 120px;
     padding: 14px 18px;
-  }
-  .input-bar button, .input-bar .send-btn {
-    min-width: 40px;
-    min-height: 40px;
-    padding: 0 14px;
-    font-size: 1em;
-  }
-  .input-bar .send-btn .send-icon {
-    width: 1em;
-    height: 1em;
-    min-width: 1em;
-    min-height: 1em;
   }
   #chatBox {
     padding: 36px 40px 20px 40px;
@@ -462,7 +517,8 @@ button .send-icon {
     max-height: 100px;
     padding: 10px 8px;
   }
-  .input-bar button, .input-bar .send-btn {
+  .input-bar-button button,
+  .input-bar-button .send-btn {
     min-width: 44px;
     min-height: 44px;
     padding: 0 16px;
@@ -481,35 +537,6 @@ button .send-icon {
     height: 36px;
     font-size: 1.1em;
   }
-}
-
-/* --- Shared styles (remain as before, but remove width: 100% from button/textarea) --- */
-.input-bar-textarea {
-    flex: 1 1 auto;
-    display: flex;
-}
-.input-bar-textarea textarea {
-    flex: 1 1 auto;
-    width: 100%;
-}
-.input-bar-button {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-}
-.input-bar-button button {
-    width: auto;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0 16px;
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.input-bar .send-btn .send-icon {
-  display: inline-block;
-  vertical-align: middle;
 }
 
 html, body {
