@@ -26,57 +26,68 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 });
 
-document.getElementById('submitButton').addEventListener('click', async function () {
-    const userInput = document.getElementById('userInput');
-    const chatBox = document.getElementById('chatBox');
-    const submitButton = document.getElementById('submitButton');
-    const modelSelect = document.getElementById('modelSelect');
+let isProcessing = false;
+let abortController = null;
 
-    // Get the trimmed query input
-    const query = userInput.value.trim();
+// Replace event listeners for submitButton with actionButton
+const actionButton = document.getElementById('actionButton');
+const userInput = document.getElementById('userInput');
+const chatBox = document.getElementById('chatBox');
+const modelSelect = document.getElementById('modelSelect');
 
-    if (!query) return;
-
-    // Clear the input box after getting the value
-    userInput.value = '';
-
-    // Append user message bubble
-    chatBox.appendChild(createBubble(query, 'userBubble'));
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    // Disable button to prevent duplicate submissions
-    submitButton.disabled = true;
-
-    const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
-    const modelName = modelSelect.value;
-
-    if (!modelName) {
-        chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
-        submitButton.disabled = false;
+actionButton.addEventListener('click', async function () {
+    if (isProcessing) {
+        // Stop the stream
+        if (abortController) abortController.abort();
         return;
     }
-
+    // Start sending
+    const query = userInput.value.trim();
+    if (!query) return;
+    userInput.value = '';
+    chatBox.appendChild(createBubble(query, 'userBubble'));
+    chatBox.scrollTop = chatBox.scrollHeight;
+    isProcessing = true;
+    actionButton.textContent = 'Stop Response';
+    userInput.disabled = true;
+    modelSelect.disabled = true;
+    abortController = new AbortController();
+    const apiEndpoint = `https://3dsoftwareemergence.dpdns.org:443/api/generate`;
+    const modelName = modelSelect.value;
+    if (!modelName) {
+        chatBox.appendChild(createBubble('Please select a model before submitting.', 'aiBubble'));
+        isProcessing = false;
+        actionButton.textContent = 'Send Query';
+        userInput.disabled = false;
+        modelSelect.disabled = false;
+        return;
+    }
     const requestData = {
         model: modelName,
         prompt: query
     };
-
     try {
-        await streamOllamaResponse(apiEndpoint, requestData, chatBox);
+        await streamOllamaResponse(apiEndpoint, requestData, chatBox, abortController.signal);
     } catch (error) {
-        console.error('Error:', error);
-        chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+        if (error.name === 'AbortError') {
+            chatBox.appendChild(createBubble('Response stopped by user.', 'aiBubble'));
+        } else {
+            chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+        }
     } finally {
+        isProcessing = false;
+        actionButton.textContent = 'Send Query';
+        userInput.disabled = false;
+        modelSelect.disabled = false;
+        abortController = null;
         chatBox.scrollTop = chatBox.scrollHeight;
-        submitButton.disabled = false;
     }
 });
 
-// Add event listener for Enter key on the input box
-document.getElementById('userInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent form submission if inside a form
-        document.getElementById('submitButton').click();
+userInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !isProcessing) {
+        event.preventDefault();
+        actionButton.click();
     }
 });
 
@@ -109,7 +120,7 @@ function parseMarkdownToHTML(text) {
     return text;
 }
 
-async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
+async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSignal) {
     const aiBubble = createBubble('', 'aiBubble');
     chatBox.appendChild(aiBubble);
 
@@ -225,7 +236,8 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
     const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestData),
+        signal: abortSignal
     });
 
     if (!response.body) {
@@ -238,6 +250,7 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
     let buffer = '';
 
     while (true) {
+        if (abortSignal.aborted) throw new DOMException('Aborted', 'AbortError');
         const { value, done } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
