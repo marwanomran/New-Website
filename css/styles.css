@@ -958,3 +958,54 @@ html, body {
     padding-right: 130px;
   }
 }
+
+/* Skip to main content link */
+.skip-link:focus {
+  position: absolute !important;
+  left: 16px !important;
+  top: 16px !important;
+  width: auto !important;
+  height: auto !important;
+  background: #4CAF50 !important;
+  color: #fff !important;
+  padding: 10px 24px !important;
+  border-radius: 8px;
+  z-index: 10000;
+  outline: 2px solid #232323;
+  box-shadow: 0 2px 8px #0002;
+}
+
+/* Logo in header */
+header .logo, .container .logo {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0002;
+  margin-right: 12px;
+}
+
+/* Footer links accessibility */
+footer a {
+  color: #388e3c;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+footer a:focus, footer a:hover {
+  color: #1b5e20;
+  outline: 2px solid #4CAF50;
+}
+
+/* Age disclaimer */
+footer span {
+  color: #b00;
+  font-weight: 600;
+}
+
+/* Improve color contrast for accessibility */
+body, .container, .bubble, .input-bar, .file-preview, .file-item {
+  color: #181818;
+}
+body.dark-mode, .container, .bubble, .input-bar, .file-preview, .file-item {
+  color: #fafafa;
+}
