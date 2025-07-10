@@ -94,11 +94,19 @@ function escapeHTML(str) {
 }
 
 function parseMarkdownToHTML(text) {
-    // Replace all code blocks (```code```) with <pre><code>...</code></pre>
-    // This regex matches triple backticks and captures everything between them, non-greedy
-    return text.replace(/```([\s\S]*?)```/g, function(match, code) {
-        return '<pre><code>' + escapeHTML(code) + '</code></pre>';
-    }).replace(/\n/g, '<br/>'); // Replace newlines in the rest of the text with <br>
+    // Find all code blocks and replace them with placeholders
+    const codeBlocks = [];
+    text = text.replace(/```([\s\S]*?)```/g, function(match, code) {
+        codeBlocks.push('<pre><code>' + escapeHTML(code) + '</code></pre>');
+        return `[[CODEBLOCK_${codeBlocks.length - 1}]]`;
+    });
+    // Replace newlines in the rest of the text
+    text = escapeHTML(text).replace(/\n/g, '<br/>');
+    // Restore code blocks
+    text = text.replace(/\[\[CODEBLOCK_(\d+)\]\]/g, function(match, idx) {
+        return codeBlocks[idx];
+    });
+    return text;
 }
 
 async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
