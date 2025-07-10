@@ -221,10 +221,27 @@ code {
     background: rgba(30,32,36,0.95);
     padding: 18px 32px 24px 32px;
     display: flex;
-    gap: 12px;
     align-items: flex-end;
     z-index: 10;
     box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.10);
+}
+.input-bar textarea {
+    flex: 1 1 auto;
+    width: auto;
+}
+.input-bar button, .input-bar .send-btn {
+    flex: 0 0 auto;
+    width: auto;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.input-bar .send-btn .send-icon {
+    width: 1em;
+    height: 1em;
+    min-width: 1em;
+    min-height: 1em;
 }
 
 textarea {
