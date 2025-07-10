@@ -236,12 +236,18 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 16px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1em;
 }
 .input-bar .send-btn .send-icon {
-    width: 1em;
-    height: 1em;
-    min-width: 1em;
-    min-height: 1em;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 textarea {
