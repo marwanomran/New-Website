@@ -85,10 +85,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         modelSelect.innerHTML = '<option value="">Error loading models</option>';
     }
 
+    let abortController = null;
+
     document.getElementById('submitButton').addEventListener('click', async function () {
         const userInput = document.getElementById('userInput');
         const chatBox = document.getElementById('chatBox');
         const submitButton = document.getElementById('submitButton');
+        const stopButton = document.getElementById('stopButton');
         const modelSelect = document.getElementById('modelSelect');
 
         // Get the trimmed query input
@@ -123,17 +126,28 @@ document.addEventListener('DOMContentLoaded', async function () {
             prompt: query
         };
 
+        abortController = new AbortController();
+        stopButton.style.display = 'block';
         try {
-            await streamOllamaResponse(apiEndpoint, requestData, chatBox);
+            await streamOllamaResponse(apiEndpoint, requestData, chatBox, abortController.signal);
         } catch (error) {
-            console.error('Error:', error);
-            chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+            if (error.name === 'AbortError') {
+                chatBox.appendChild(createBubble('Response stopped by user.', 'aiBubble'));
+            } else {
+                chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
+            }
         } finally {
             chatBox.scrollTop = chatBox.scrollHeight;
             submitButton.disabled = false;
-            // Hide loading spinner
             loadingSpinner.style.display = 'none';
+            stopButton.style.display = 'none';
+            abortController = null;
         }
+    });
+
+    document.getElementById('stopButton').addEventListener('click', function () {
+        if (abortController) abortController.abort();
+        document.getElementById('stopButton').style.display = 'none';
     });
 
     // Add event listener for Enter key on the input box
@@ -174,7 +188,7 @@ function parseMarkdownToHTML(text) {
     return text;
 }
 
-async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
+async function streamOllamaResponse(apiEndpoint, requestData, chatBox, abortSignal) {
     const aiBubble = createBubble('', 'aiBubble');
     chatBox.appendChild(aiBubble);
 
@@ -285,7 +299,8 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
     const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestData),
+        signal: abortSignal
     });
 
     if (!response.body) {

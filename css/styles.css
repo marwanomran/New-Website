@@ -173,6 +173,23 @@ body.light-mode #modelSelect:focus, body.light-mode #modelSelect:hover {
     flex-direction: column;
     gap: 16px;
     scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #4CAF50 #232323;
+}
+#chatBox::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+#chatBox::-webkit-scrollbar-thumb {
+  background: rgba(76,175,80,0.35);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+#chatBox::-webkit-scrollbar-thumb:hover {
+  background: rgba(76,175,80,0.55);
+}
+#chatBox::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .bubble {
@@ -603,4 +620,65 @@ html, body {
   display: flex;
   align-items: center;
   box-sizing: border-box;
+}
+
+.stop-btn {
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(229,57,53,0.10);
+  margin-left: auto;
+  margin-right: 0;
+  display: block;
+  transition: background 0.2s;
+}
+.stop-btn:hover {
+  background: #b71c1c;
+}
+
+html, body {
+  height: 100%;
+  min-height: 100vh;
+}
+
+.chat-outer {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: inherit;
+}
+
+.chat-inner {
+  width: 95vw;
+  max-width: 1100px;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+@media (min-width: 701px) {
+  .chat-inner {
+    width: 65vw;
+    max-width: 1100px;
+    min-height: 80vh;
+  }
+}
+@media (max-width: 700px) {
+  .chat-inner {
+    width: 100vw;
+    min-height: 100vh;
+    max-width: 100vw;
+  }
+}
+.container {
+  width: 100%;
+  min-height: 100%;
 }

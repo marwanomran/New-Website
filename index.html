@@ -32,36 +32,41 @@
          data-ad-slot="1234567890"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <main class="container">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">🌙</button>
-        <h1>Interact with Zain Service 3.0</h1>
-        <div class="model-select-group">
-            <label for="modelSelect">Choose Model:</label>
-            <select id="modelSelect" aria-label="Model selection">
-                <option value="">Loading models...</option>
-            </select>
-        </div>
-        <div id="chatBox" aria-live="polite"></div>
-        <!-- In-content ad placeholder -->
-        <ins class="adsbygoogle"
-             style="display:block; text-align:center; margin: 16px 0;"
-             data-ad-client="ca-pub-6608592219524355"
-             data-ad-slot="1234567891"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <div class="input-bar">
-            <div class="input-bar-textarea">
-                <textarea id="userInput" placeholder="Enter your query here..." autocomplete="off" aria-label="User input"></textarea>
-            </div>
-            <div class="input-bar-button">
-                <button id="submitButton" class="send-btn" aria-label="Send">
-                    <span>Send</span>
-                    <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                </button>
-            </div>
-            <span id="loadingSpinner" class="loading-spinner" style="display:none;"></span>
-        </div>
-    </main>
+    <div class="chat-outer">
+      <div class="chat-inner">
+        <main class="container">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">🌙</button>
+          <h1>Interact with Zain Service 3.0</h1>
+          <div class="model-select-group">
+              <label for="modelSelect">Choose Model:</label>
+              <select id="modelSelect" aria-label="Model selection">
+                  <option value="">Loading models...</option>
+              </select>
+          </div>
+          <div id="chatBox" aria-live="polite"></div>
+          <!-- In-content ad placeholder -->
+          <ins class="adsbygoogle"
+               style="display:block; text-align:center; margin: 16px 0;"
+               data-ad-client="ca-pub-6608592219524355"
+               data-ad-slot="1234567891"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <button id="stopButton" class="stop-btn" style="display:none; margin-bottom: 10px;">⏹ Stop</button>
+          <div class="input-bar">
+              <div class="input-bar-textarea">
+                  <textarea id="userInput" placeholder="Enter your query here..." autocomplete="off" aria-label="User input"></textarea>
+              </div>
+              <div class="input-bar-button">
+                  <button id="submitButton" class="send-btn" aria-label="Send">
+                      <span>Send</span>
+                      <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+              </div>
+              <span id="loadingSpinner" class="loading-spinner" style="display:none;"></span>
+          </div>
+        </main>
+      </div>
+    </div>
     <!-- Bottom ad placeholder -->
     <ins class="adsbygoogle"
          style="display:block; text-align:center; margin-top: 16px;"
