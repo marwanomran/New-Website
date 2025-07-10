@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="32" fill="#4CAF50"/>
+  <ellipse cx="64" cy="72" rx="44" ry="36" fill="#388e3c"/>
+  <path d="M40 88 Q32 120 64 104 Q96 120 88 88" fill="#388e3c"/>
+  <text x="50%" y="60%" text-anchor="middle" fill="#fff" font-size="56" font-family="Inter, Arial, sans-serif" font-weight="bold" dy=".35em">Z</text>
+</svg> 
