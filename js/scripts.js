@@ -72,7 +72,6 @@ document.getElementById('submitButton').addEventListener('click', async function
     }
 });
 
-<<<<<<< HEAD
 // Add event listener for Enter key on the input box
 document.getElementById('userInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -143,60 +142,12 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
             }
         }
     }
-=======
-async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
-    const aiBubble = createBubble('', 'aiBubble');
-    chatBox.appendChild(aiBubble);
-
-    let fullResponse = '';
-
-    const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
-    });
-
-    if (!response.body) {
-        aiBubble.textContent = "No response body from server.";
-        return;
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        // Split buffer into lines (Ollama returns JSON per line)
-        let lines = buffer.split('\n');
-        buffer = lines.pop(); // Last line may be incomplete, keep it in buffer
-
-        for (const line of lines) {
-            if (!line.trim()) continue;
-            try {
-                const obj = JSON.parse(line);
-                if (obj.response && obj.response.trim() !== '') {
-                    fullResponse += obj.response;
-                    // Update the bubble as we go (character-by-character effect)
-                    aiBubble.textContent = fullResponse;
-                    // If you want a typing effect, you can add a delay here
-                }
-            } catch (e) {
-                // Ignore invalid JSON lines
-            }
-        }
-    }
->>>>>>> 8ae73613c0d9b72db6b16136e4918b56c0029dc8
     // Handle any remaining buffer
     if (buffer.trim()) {
         try {
             const obj = JSON.parse(buffer);
             if (obj.response && obj.response.trim() !== '') {
                 fullResponse += obj.response;
-<<<<<<< HEAD
                 for (const char of obj.response) {
                     charQueue.push(char);
                 }
@@ -206,10 +157,5 @@ async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
                 }
             }
         } catch (e) {}
-=======
-                aiBubble.textContent = fullResponse;
-            }
-        } catch (e) { }
->>>>>>> 8ae73613c0d9b72db6b16136e4918b56c0029dc8
     }
 }
