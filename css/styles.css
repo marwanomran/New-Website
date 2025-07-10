@@ -61,6 +61,26 @@ h1 {
     border-top-left-radius: 20px;
 }
 
+pre, code {
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
+    background: #181c20;
+    color: #e0e6f0;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+pre {
+    overflow-x: auto;
+    background: #181c20;
+}
+code {
+    background: #23272e;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
 textarea, button {
     width: 100%;
     padding: 10px;

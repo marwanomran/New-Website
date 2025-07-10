@@ -94,29 +94,22 @@ function escapeHTML(str) {
 }
 
 function parseMarkdownToHTML(text) {
-    // Regex-based parser for code blocks (```[lang]?\n...\n```)
-    const codeBlockRegex = /```([\w-]*)\n([\s\S]*?)```/g;
-    let lastIndex = 0;
+    // Split on triple backticks, keeping the delimiters
+    const parts = text.split(/(```)/);
     let html = '';
-    let match;
-    while ((match = codeBlockRegex.exec(text)) !== null) {
-        // Add text before the code block
-        if (match.index > lastIndex) {
-            html += '<span>' + escapeHTML(text.slice(lastIndex, match.index)) + '</span>';
+    let inCode = false;
+    for (let i = 0; i < parts.length; i++) {
+        if (parts[i] === '```') {
+            inCode = !inCode;
+            continue;
         }
-        // Add code block
-        const lang = match[1] ? ` class="language-${escapeHTML(match[1])}"` : '';
-        html += `<pre><code${lang}>` + escapeHTML(match[2]) + '</code></pre>';
-        lastIndex = codeBlockRegex.lastIndex;
+        if (inCode) {
+            html += '<pre><code>' + escapeHTML(parts[i]) + '</code></pre>';
+        } else {
+            // Replace newlines with <br> for normal text
+            html += '<span>' + escapeHTML(parts[i]).replace(/\n/g, '<br/>') + '</span>';
+        }
     }
-    // Add any remaining text after the last code block
-    if (lastIndex < text.length) {
-        html += '<span>' + escapeHTML(text.slice(lastIndex)) + '</span>';
-    }
-    // Replace newlines in non-code text with <br>
-    html = html.replace(/<span>([\s\S]*?)<\/span>/g, function(_, inner) {
-        return '<span>' + inner.replace(/\n/g, '<br/>') + '</span>';
-    });
     return html;
 }
 
