@@ -37,6 +37,9 @@ document.getElementById('submitButton').addEventListener('click', async function
 
     if (!query) return;
 
+    // Clear the input box after getting the value
+    userInput.value = '';
+
     // Append user message bubble
     chatBox.appendChild(createBubble(query, 'userBubble'));
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -59,48 +62,7 @@ document.getElementById('submitButton').addEventListener('click', async function
     };
 
     try {
-        let response = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestData)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-
-        const text = await response.text();
-        console.log('Raw Ollama response:', text);
-
-        // Parse the lines from the raw response
-        let lines;
-        try {
-            lines = text.split('\n').filter(line => line.trim() !== '');
-        } catch (e) {
-            lines = [];
-        }
-        console.log('Parsed lines:', lines);
-
-        let fullResponse = '';
-
-        for (const line of lines) {
-            try {
-                const obj = JSON.parse(line);
-                if (obj.response && obj.response.trim() !== '') {
-                    fullResponse += obj.response; // Concatenate non-empty response text
-                }
-            } catch (e) {
-                console.warn('Invalid JSON line:', line);
-            }
-        }
-
-        console.log('Full response after concatenation:', fullResponse);
-
-        const aiText = fullResponse.trim() || "No response from AI.";
-        const aiBubble = createBubble('', 'aiBubble');
-        chatBox.appendChild(aiBubble);
-        typeTextIntoBubble(aiBubble, aiText, 50); // 50ms per word, adjust as desired
-
+        await streamOllamaResponse(apiEndpoint, requestData, chatBox);
     } catch (error) {
         console.error('Error:', error);
         chatBox.appendChild(createBubble(`An error occurred: ${error.message}`, 'aiBubble'));
@@ -108,17 +70,92 @@ document.getElementById('submitButton').addEventListener('click', async function
         chatBox.scrollTop = chatBox.scrollHeight;
         submitButton.disabled = false;
     }
-    function typeTextIntoBubble(bubble, text, delay = 50) {
-        const words = text.split(' ');
-        let i = 0;
-        bubble.textContent = '';
-        function typeNext() {
-            if (i < words.length) {
-                bubble.textContent += (i === 0 ? '' : ' ') + words[i];
-                i++;
-                setTimeout(typeNext, delay);
-            }
-        }
-        typeNext();
+});
+
+// Add event listener for Enter key on the input box
+document.getElementById('userInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission if inside a form
+        document.getElementById('submitButton').click();
     }
 });
+
+async function streamOllamaResponse(apiEndpoint, requestData, chatBox) {
+    const aiBubble = createBubble('', 'aiBubble');
+    chatBox.appendChild(aiBubble);
+
+    let fullResponse = '';
+    let charQueue = [];
+    let typing = false;
+
+    function typeNextChar() {
+        if (charQueue.length > 0) {
+            aiBubble.textContent += charQueue.shift();
+            setTimeout(typeNextChar, 20); // 20ms per character
+        } else {
+            typing = false;
+        }
+    }
+
+    const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    });
+
+    if (!response.body) {
+        aiBubble.textContent = "No response body from server.";
+        return;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        // Split buffer into lines (Ollama returns JSON per line)
+        let lines = buffer.split('\n');
+        buffer = lines.pop(); // Last line may be incomplete, keep it in buffer
+
+        for (const line of lines) {
+            if (!line.trim()) continue;
+            try {
+                const obj = JSON.parse(line);
+                if (obj.response && obj.response.trim() !== '') {
+                    fullResponse += obj.response;
+                    // Add new characters to the queue
+                    for (const char of obj.response) {
+                        charQueue.push(char);
+                    }
+                    // Start typing if not already in progress
+                    if (!typing) {
+                        typing = true;
+                        typeNextChar();
+                    }
+                }
+            } catch (e) {
+                // Ignore invalid JSON lines
+            }
+        }
+    }
+    // Handle any remaining buffer
+    if (buffer.trim()) {
+        try {
+            const obj = JSON.parse(buffer);
+            if (obj.response && obj.response.trim() !== '') {
+                fullResponse += obj.response;
+                for (const char of obj.response) {
+                    charQueue.push(char);
+                }
+                if (!typing) {
+                    typing = true;
+                    typeNextChar();
+                }
+            }
+        } catch (e) {}
+    }
+}
