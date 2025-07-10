@@ -332,6 +332,20 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 });
 
+// Cookie Consent Banner logic
+window.addEventListener('DOMContentLoaded', function() {
+    var consent = localStorage.getItem('cookieConsent');
+    var banner = document.getElementById('cookieConsent');
+    var acceptBtn = document.getElementById('acceptCookies');
+    if (banner && acceptBtn && !consent) {
+        banner.style.display = 'block';
+        acceptBtn.onclick = function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            banner.style.display = 'none';
+        };
+    }
+});
+
 function escapeHTML(str) {
     return str.replace(/[&<>"]'/g, function(tag) {
         const charsToReplace = {

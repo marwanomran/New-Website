@@ -30,14 +30,16 @@
 </head>
 <body>
     <!-- Side AdSense containers -->
+    <div class="ad-label left-ad-label" style="position:fixed;left:0;top:0;width:120px;text-align:center;z-index:51;font-size:0.98em;color:#888;background:transparent;">Advertisement</div>
     <ins class="adsbygoogle side-ad left-side-ad"
-         style="display:block; position:fixed; left:0; top:0; height:100vh; width:120px; z-index:50; text-align:center;"
+         style="display:block; position:fixed; left:0; top:24px; height:calc(100vh - 24px); width:120px; z-index:50; text-align:center;"
          data-ad-client="ca-pub-6608592219524355"
          data-ad-slot="1234567893"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
+    <div class="ad-label right-ad-label" style="position:fixed;right:0;top:0;width:120px;text-align:center;z-index:51;font-size:0.98em;color:#888;background:transparent;">Advertisement</div>
     <ins class="adsbygoogle side-ad right-side-ad"
-         style="display:block; position:fixed; right:0; top:0; height:100vh; width:120px; z-index:50; text-align:center;"
+         style="display:block; position:fixed; right:0; top:24px; height:calc(100vh - 24px); width:120px; z-index:50; text-align:center;"
          data-ad-client="ca-pub-6608592219524355"
          data-ad-slot="1234567894"
          data-ad-format="auto"
@@ -55,6 +57,7 @@
           </div>
           <div id="chatBox" aria-live="polite"></div>
           <!-- In-content ad placeholder -->
+          <div class="ad-label" style="text-align:center;font-size:0.98em;color:#888;">Advertisement</div>
           <ins class="adsbygoogle"
                style="display:block; text-align:center; margin: 16px 0;"
                data-ad-client="ca-pub-6608592219524355"
@@ -93,6 +96,7 @@
       </div>
     </div>
     <!-- Bottom ad placeholder -->
+    <div class="ad-label" style="text-align:center;font-size:0.98em;color:#888;">Advertisement</div>
     <ins class="adsbygoogle"
          style="display:block; text-align:center; margin-top: 16px;"
          data-ad-client="ca-pub-6608592219524355"
@@ -104,6 +108,11 @@
       <a href="terms.html" style="margin:0 18px;color:inherit;text-decoration:underline;">Terms of Service</a>
       <a href="contact.html" style="margin:0 18px;color:inherit;text-decoration:underline;">Contact</a>
     </footer>
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" style="display:none;position:fixed;bottom:0;left:0;width:100vw;z-index:9999;background:rgba(30,32,36,0.98);color:#fff;padding:18px 12px 18px 12px;text-align:center;font-size:1em;box-shadow:0 -2px 16px 0 rgba(0,0,0,0.10);">
+      This site uses cookies to enhance your experience and show relevant ads. See our <a href="privacy.html" style="color:#4CAF50;text-decoration:underline;">Privacy Policy</a>.
+      <button id="acceptCookies" style="margin-left:18px;padding:8px 18px;background:#4CAF50;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer;">Accept</button>
+    </div>
     <script src="/js/scripts.js?v=1.0.1"></script>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
