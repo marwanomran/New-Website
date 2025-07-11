@@ -839,6 +839,11 @@ footer span {
     .file-size {
         font-size: 0.75em;
     }
+    /* Hide in-content ad and label on mobile */
+    .container > .ad-label,
+    .container > .adsbygoogle {
+      display: none !important;
+    }
 }
 
 @media (max-width: 1100px) {
