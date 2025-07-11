@@ -923,19 +923,19 @@ body.light-mode .file-size {
     border: 0 !important;
 }
 
-/* Floating footer menu FAB */
+/* Floating footer menu FAB (top right on mobile) */
 .footer-menu-fab {
   display: none;
   position: fixed;
+  top: 20px;
   right: 20px;
-  bottom: 24px;
   z-index: 20001;
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #4CAF50 60%, #388e3c 100%);
   color: #fff;
-  font-size: 2em;
+  font-size: 1.7em;
   border: none;
   box-shadow: 0 4px 16px 0 rgba(0,0,0,0.18);
   cursor: pointer;
@@ -957,6 +957,10 @@ body.light-mode .file-size {
   }
   .footer-links {
     display: none !important;
+  }
+  /* Add margin if theme toggle is present */
+  .theme-toggle {
+    margin-right: 60px;
   }
 }
 @media (min-width: 701px) {
