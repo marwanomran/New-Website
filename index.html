@@ -176,15 +176,17 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <script>
-// Floating footer menu modal logic
-const fab = document.getElementById('footerMenuFab');
-const menuModal = document.getElementById('footerMenuModal');
-const closeMenu = document.getElementById('closeFooterMenu');
-if (fab && menuModal && closeMenu) {
-  fab.onclick = () => menuModal.style.display = 'flex';
-  closeMenu.onclick = () => menuModal.style.display = 'none';
-  menuModal.onclick = (e) => { if (e.target === menuModal) menuModal.style.display = 'none'; };
-}
+window.addEventListener('DOMContentLoaded', function() {
+  // Floating footer menu modal logic
+  const fab = document.getElementById('footerMenuFab');
+  const menuModal = document.getElementById('footerMenuModal');
+  const closeMenu = document.getElementById('closeFooterMenu');
+  if (fab && menuModal && closeMenu) {
+    fab.onclick = () => menuModal.style.display = 'flex';
+    closeMenu.onclick = () => menuModal.style.display = 'none';
+    menuModal.onclick = (e) => { if (e.target === menuModal) menuModal.style.display = 'none'; };
+  }
+});
 </script>
 </body>
 </html>
