@@ -136,7 +136,6 @@
     
     <!-- Footer -->
     <footer>
-        <button id="footerMenuBtn" class="footer-menu-btn" aria-label="Open menu" style="display:none;">☰ Menu</button>
         <div class="footer-links">
             <a href="about.html">About</a>
             <a href="privacy.html">Privacy Policy</a>
@@ -148,6 +147,8 @@
         </div>
         <span>Not intended for users under 13.</span>
     </footer>
+    <!-- Floating menu button for mobile -->
+    <button id="footerMenuFab" class="footer-menu-fab" aria-label="Open menu" style="display:none;">☰</button>
     <!-- Footer modal for mobile -->
     <div id="footerMenuModal" class="footer-menu-modal" style="display:none;">
         <div class="footer-menu-modal-content">
@@ -175,12 +176,12 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
     <script>
-// Footer menu modal logic
-const menuBtn = document.getElementById('footerMenuBtn');
+// Floating footer menu modal logic
+const fab = document.getElementById('footerMenuFab');
 const menuModal = document.getElementById('footerMenuModal');
 const closeMenu = document.getElementById('closeFooterMenu');
-if (menuBtn && menuModal && closeMenu) {
-  menuBtn.onclick = () => menuModal.style.display = 'block';
+if (fab && menuModal && closeMenu) {
+  fab.onclick = () => menuModal.style.display = 'flex';
   closeMenu.onclick = () => menuModal.style.display = 'none';
   menuModal.onclick = (e) => { if (e.target === menuModal) menuModal.style.display = 'none'; };
 }
